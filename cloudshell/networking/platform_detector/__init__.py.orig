@@ -1,6 +1,0 @@
-__author__ = 'coye'
-<<<<<<< HEAD
-from pkgutil import extend_path
-__path__ = extend_path(__path__, __name__)
-=======
->>>>>>> c3fe6d9f58b094f2090a617bec799aee34ece02d

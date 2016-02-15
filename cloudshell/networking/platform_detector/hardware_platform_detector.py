@@ -4,9 +4,10 @@ import re
 
 from cloudshell.snmp.quali_snmp import QualiSnmp
 from cloudshell.core.logger import qs_logger
-from cloudshell.networking.platform_detector.resource_drivers_map import RESOURCE_DRIVERS_MAP
 
-class HardwarePlatformDetector():
+class HardwarePlatformDetector:
+    RESOURCE_DRIVERS_MAP = {}
+
     def __init__(self, ip, user='', password='', community='',  private_key='', version='2', logger=None):
         self.snmp = None
         self._logger = logger if logger else qs_logger.getQSLogger(handler_name='SNMP_Hardware_Detector')
@@ -71,9 +72,9 @@ class HardwarePlatformDetector():
             match_object = re.search(r'1\.3\.6\.1\.4\.1\.(?P<vendor>\d+)(\.\d)+\.(?P<model>\d+$)', hardware_info)
         if match_object is not None:
             result = match_object.groupdict()
-            if result['vendor'] and result['vendor'] in RESOURCE_DRIVERS_MAP:
-                if result['model'] in RESOURCE_DRIVERS_MAP[result['vendor']]:
-                    handler = RESOURCE_DRIVERS_MAP[result['vendor']][result['model']]
+            if result['vendor'] and result['vendor'] in self.RESOURCE_DRIVERS_MAP:
+                if result['model'] in self.RESOURCE_DRIVERS_MAP[result['vendor']]:
+                    handler = self.RESOURCE_DRIVERS_MAP[result['vendor']][result['model']]
         if handler:
             self._logger.info('Detected platform: {0}'.format(handler))
         return handler
