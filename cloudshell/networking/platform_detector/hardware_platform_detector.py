@@ -3,7 +3,7 @@ __author__ = 'CoYe'
 import re
 
 from cloudshell.snmp.quali_snmp import QualiSnmp
-from qualipy.common.libs import qs_logger
+from cloudshell.core.logger import qs_logger
 from cloudshell.networking.platform_detector.resource_drivers_map import RESOURCE_DRIVERS_MAP
 
 class HardwarePlatformDetector():
