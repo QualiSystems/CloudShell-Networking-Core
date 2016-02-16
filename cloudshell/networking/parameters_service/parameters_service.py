@@ -4,7 +4,7 @@ import re
 
 class ParametersService:
     @staticmethod
-    def getValidateList(command_tamplate, properties_list):
+    def get_validate_list(command_tamplate, properties_list):
         validate_result = ParametersService._validate(properties_list, command_tamplate.getReStringList())
         if validate_result[0]:
             return command_tamplate.getCommand(*properties_list)
