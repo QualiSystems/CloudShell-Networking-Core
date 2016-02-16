@@ -66,15 +66,9 @@ class HardwarePlatformDetector:
         """
         handler = None
         hardware_info = self.snmp.get(('SNMPv2-MIB', 'sysObjectID', '0')).values()[0]
-
-        match_object = re.search(r'^SNMPv2-SMI::enterprises\.(?P<vendor>\d+)(\.\d)+\.(?P<model>\d+$)', hardware_info)
-        if match_object is None:
-            match_object = re.search(r'1\.3\.6\.1\.4\.1\.(?P<vendor>\d+)(\.\d)+\.(?P<model>\d+$)', hardware_info)
-        if match_object is not None:
-            result = match_object.groupdict()
-            if result['vendor'] and result['vendor'] in self.RESOURCE_DRIVERS_MAP:
-                if result['model'] in self.RESOURCE_DRIVERS_MAP[result['vendor']]:
-                    handler = self.RESOURCE_DRIVERS_MAP[result['vendor']][result['model']]
+        device_id = hardware_info.split('.')[-1]
+        if device_id in self.RESOURCE_DRIVERS_MAP:
+            handler = self.RESOURCE_DRIVERS_MAP[device_id]
         if handler:
             self._logger.info('Detected platform: {0}'.format(handler))
         return handler
