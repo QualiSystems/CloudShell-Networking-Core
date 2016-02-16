@@ -134,22 +134,24 @@ class networking_generic_resource_driver(NetworkingBase):
         if ('Filename' in json_object['resource']) and json_object['resource']['Filename'] != '':
             handler_params['session_handler_name'] = 'file'
             handler_params['filename'] = json_object['resource']['Filename']
-            self._resource_handler = HandlerFactory.createHandler(self.handler_name, **handler_params)
+            self._resource_handler = HandlerFactory.create_handler(self.handler_name, **handler_params)
         else:
-            driver_logger = HandlerFactory.getLogger(self.handler_name, logger_params=handler_params['logger_params'])
+            driver_logger = HandlerFactory.get_logger(self.handler_name, logger_params=handler_params['logger_params'])
             handler_params['logger'] = driver_logger
 
-            tmp_snmp_handler = networking_generic_resource_driver.create_snmp_helper(handler_params['host'], json_object['resource'],
-                                                                                 driver_logger)
+            tmp_snmp_handler = networking_generic_resource_driver.create_snmp_helper(handler_params['host'],
+                                                                                     json_object['resource'],
+                                                                                     driver_logger)
             detected_platform_name = self.__detect_hardware_platform(tmp_snmp_handler)
 #
             if detected_platform_name:
                 self.handler_name = detected_platform_name
 
-            self._resource_handler = HandlerFactory.createHandler(self.handler_name, **handler_params)
+            self._resource_handler = HandlerFactory.create_handler(self.handler_name, **handler_params)
 
         if detected_platform_name is None:
-            self._resource_handler._logger.info('Failed to detect platform using SNMP. Default resource is \'{0}\' .'.format(self.handler_name.upper()))
+            self._resource_handler._logger.info('Failed to detect platform using SNMP. Default resource is \'{0}\' .'.
+                                                format(self.handler_name.upper()))
 
         self._resource_handler.set_parameters(json_object)
         self._resource_handler._snmp_handler = self.temp_snmp_handler

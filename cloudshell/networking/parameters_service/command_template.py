@@ -17,16 +17,15 @@ class CommandTemplate:
         else:
             self._error_message_list = [error_message_list]
 
-    def getErrorByIndex(self, index):
+    def get_error_by_index(self, index):
         if (len(self._error_message_list) - 1) < index:
             raise Exception('Command Template: something went wrong! '
                             'Error index bigger, than error list size!')
 
         return self._error_message_list[index]
 
-
-    def getReStringList(self):
+    def get_re_string_list(self):
         return self._re_string_list
 
-    def getCommand(self, *args):
+    def get_command(self, *args):
         return self._command.format(*args)

@@ -5,11 +5,11 @@ import re
 class ParametersService:
     @staticmethod
     def get_validate_list(command_tamplate, properties_list):
-        validate_result = ParametersService._validate(properties_list, command_tamplate.getReStringList())
+        validate_result = ParametersService._validate(properties_list, command_tamplate.get_re_string_list())
         if validate_result[0]:
-            return command_tamplate.getCommand(*properties_list)
+            return command_tamplate.get_command(*properties_list)
         else:
-            raise Exception(command_tamplate.getErrorByIndex(validate_result[1]))
+            raise Exception(command_tamplate.get_error_by_index(validate_result[1]))
 
     @staticmethod
     def _validate(properties_list, re_string_list):

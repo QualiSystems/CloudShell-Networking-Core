@@ -15,7 +15,7 @@ class NetworkingBase(BaseResourceDriver):
         pass
 
     @abstractmethod
-    def SendCustomCommand(self):
+    def SendCustomCommand(self, command):
         pass
 
     @abstractmethod
@@ -31,7 +31,7 @@ class NetworkingBase(BaseResourceDriver):
         pass
 
     @abstractmethod
-    def UpdateFirmware(self):
+    def UpdateFirmware(self, matrixJSON, remote_host, file_path):
         pass
 
     @abstractmethod
