@@ -1,11 +1,8 @@
-__author__ = 'CoYe'
-
 import json
 
-import cloudshell.networking.cisco.ios.resource_drivers
 from cloudshell.networking.networking_base import NetworkingBase, DriverFunction
 from cloudshell.shell.core.handler_factory import HandlerFactory
-
+from cloudshell.core.logger import qs_logger
 from cloudshell.networking.platform_detector.hardware_platform_detector import HardwarePlatformDetector
 
 
@@ -108,13 +105,13 @@ class networking_generic_resource_driver(NetworkingBase):
 
     @DriverFunction(extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def Init(self, matrixJSON):
-        detected_platform_name = None
         json_object = json.loads(matrixJSON)
         self._json_matrix = json_object
         self.resource_name = 'generic_resource'
         if not self.handler_name:
-            #ToDo Decide sould we prohibid direct usage of this class
             self.handler_name = 'generic_driver'
+
+        self.temp_snmp_handler = None
 
         # set initial reservation ID to 'Autoload' will be used if not other provided.
         self.reservation_id = 'Autoload'
@@ -123,40 +120,45 @@ class networking_generic_resource_driver(NetworkingBase):
             self.resource_name = json_object['resource']['ResourceName']
 
         if 'reservation' in json_object:
-            if 'ReservationId' in json_object['reservation'] and not json_object['reservation']['ReservationId'] is None:
+            if 'ReservationId' in json_object['reservation'] and not json_object['reservation'][
+                'ReservationId'] is None:
                 self.reservation_id = json_object['reservation']['ReservationId']
         else:
-            json_object['reservation']={}
+            json_object['reservation'] = {}
             json_object['reservation']['ReservationId'] = self.reservation_id
 
         handler_params = self.get_handler_parameters_from_json(json_object)
-
-        if ('Filename' in json_object['resource']) and json_object['resource']['Filename'] != '':
+        detected_platform_name = None
+        if 'Filename' in json_object['resource'] and json_object['resource']['Filename'] != '':
             handler_params['session_handler_name'] = 'file'
             handler_params['filename'] = json_object['resource']['Filename']
-            self._resource_handler = HandlerFactory.create_handler(self.handler_name, **handler_params)
+            if 'HandlerName' in json_object['resource'] and json_object['resource']['HandlerName'] != '':
+                detected_platform_name = json_object['resource']['HandlerName']
         else:
             driver_logger = HandlerFactory.get_logger(self.handler_name, logger_params=handler_params['logger_params'])
             handler_params['logger'] = driver_logger
 
             tmp_snmp_handler = networking_generic_resource_driver.create_snmp_helper(handler_params['host'],
-                                                                                     json_object['resource'],
-                                                                                     driver_logger)
+                                                                                  json_object['resource'],
+                                                                                  driver_logger)
             detected_platform_name = self.__detect_hardware_platform(tmp_snmp_handler)
-#
-            if detected_platform_name:
-                self.handler_name = detected_platform_name
 
-            self._resource_handler = HandlerFactory.create_handler(self.handler_name, **handler_params)
+        if detected_platform_name:
+            self.handler_name = detected_platform_name
 
-        if detected_platform_name is None:
-            self._resource_handler._logger.info('Failed to detect platform using SNMP. Default resource is \'{0}\' .'.
-                                                format(self.handler_name.upper()))
+
+        self._resource_handler = HandlerFactory.create_handler(self.handler_name, **handler_params)
+        self._resource_handler._logger.info('Created resource handle {0}'.format(self.handler_name.upper()))
 
         self._resource_handler.set_parameters(json_object)
-        self._resource_handler._snmp_handler = self.temp_snmp_handler
-        #self._resource_handler.connect()
-        return 'Log Path: {0}'.format(self._resource_handler._logger.handlers[0].baseFilename)
+
+        if self.temp_snmp_handler:
+            self._resource_handler._snmp_handler = self.temp_snmp_handler
+
+        log_path = qs_logger.get_log_path(self._resource_handler._logger)
+        if log_path:
+            return 'Log Path: {0}'.format(log_path)
+        # return 'Log Path: {0}'.format(self._resource_handler._logger.handlers[0].baseFilename)
 
     @DriverFunction(alias='Get Inventory', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def GetInventory(self, matrixJSON):
