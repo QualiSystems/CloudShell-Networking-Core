@@ -220,7 +220,7 @@ def getMatrixFromString(data_str):
 
 
 def isSameListCommandInFile(filename, expect_list):
-    data = readDataFromFile(filename)
+    data = read_data_from_file(filename)
 
     data_list = data.split('\n')
     data_list = filter(lambda value:

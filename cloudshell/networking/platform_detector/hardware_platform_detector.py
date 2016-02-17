@@ -10,7 +10,7 @@ class HardwarePlatformDetector:
 
     def __init__(self, ip, user='', password='', community='',  private_key='', version='2', logger=None):
         self.snmp = None
-        self._logger = logger if logger else qs_logger.getQSLogger(handler_name='SNMP_Hardware_Detector')
+        self._logger = logger if logger else qs_logger.get_qs_logger(handler_name='SNMP_Hardware_Detector')
         #ToDo ask Gal do we really support v1 snmp, according to the fact it has restrictions for loading mib(unclarified)
         if version == '':
             self._logger.info('"SNMP Version" parameter is empty. Use snmp v2 as default.')

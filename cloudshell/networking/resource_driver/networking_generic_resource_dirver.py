@@ -1,6 +1,6 @@
 import json
 
-from cloudshell.networking.networking_base import NetworkingBase, DriverFunction
+from cloudshell.networking.networking_resource_driver_base import NetworkingBase, DriverFunction
 from cloudshell.shell.core.handler_factory import HandlerFactory
 from cloudshell.core.logger import qs_logger
 from cloudshell.networking.platform_detector.hardware_platform_detector import HardwarePlatformDetector
@@ -105,6 +105,7 @@ class networking_generic_resource_driver(NetworkingBase):
 
     @DriverFunction(extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def Init(self, matrixJSON):
+        detected_platform_name = None
         json_object = json.loads(matrixJSON)
         self._json_matrix = json_object
         self.resource_name = 'generic_resource'
@@ -120,15 +121,13 @@ class networking_generic_resource_driver(NetworkingBase):
             self.resource_name = json_object['resource']['ResourceName']
 
         if 'reservation' in json_object:
-            if 'ReservationId' in json_object['reservation'] and not json_object['reservation'][
-                'ReservationId'] is None:
+            if 'ReservationId' in json_object['reservation'] and not json_object['reservation']['ReservationId'] is None:
                 self.reservation_id = json_object['reservation']['ReservationId']
         else:
             json_object['reservation'] = {}
             json_object['reservation']['ReservationId'] = self.reservation_id
 
         handler_params = self.get_handler_parameters_from_json(json_object)
-        detected_platform_name = None
         if 'Filename' in json_object['resource'] and json_object['resource']['Filename'] != '':
             handler_params['session_handler_name'] = 'file'
             handler_params['filename'] = json_object['resource']['Filename']
@@ -179,12 +178,12 @@ class networking_generic_resource_driver(NetworkingBase):
         :rtype: string
         """
         self.__check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.update_firmware(remote_host, file_path)
+        result_str = self._resource_handler.update_firmware(remote_host=remote_host, file_path=file_path)
         self._resource_handler.disconnect()
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Save', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
-    def Save(self, matrixJSON, destination_host, source_filename):
+    def Save(self, matrixJSON, folder_path, configuration_type):
         """
         Backup configuration
         :return: success string with saved file name
@@ -192,18 +191,19 @@ class networking_generic_resource_driver(NetworkingBase):
         """
 
         self.__check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.backup_configuration(destination_host, source_filename)
+        result_str = self._resource_handler.backup_configuration(destination_host=folder_path,
+                                                                 source_filename=configuration_type)
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Restore', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
-    def Restore(self, matrixJSON, source_file, clear_config='no'):
+    def Restore(self, matrixJSON, path, restore_method='Override'):
         """
         Restore configuration
         :return: success string
         :rtype: string
         """
         self.__check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.restore_configuration(source_file, clear_config)
+        result_str = self._resource_handler.restore_configuration(source_file=path, clear_config=restore_method)
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Send Command', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
