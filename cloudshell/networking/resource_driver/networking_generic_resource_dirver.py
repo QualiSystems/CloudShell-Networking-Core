@@ -7,10 +7,11 @@ from cloudshell.networking.platform_detector.hardware_platform_detector import H
 
 
 class networking_generic_resource_driver(NetworkingBase):
-    REQUIRED_RESORCE_ATTRIBUTES = {"resource": ["ResourceAddress", "User", "Password", "Enable Password", "Console Server IP Address",
-                                                "Console User", "Console Password", "Console Port", "Connection Type",
-                                                "SNMP Version", "SNMP Read Community", "SNMP V3 User", "SNMP V3 Password",
-                                                "SNMP V3 Private Key"]}
+    REQUIRED_RESORCE_ATTRIBUTES = {
+        "resource": ["ResourceAddress", "User", "Password", "Enable Password", "Console Server IP Address",
+                     "Console User", "Console Password", "Console Port", "Connection Type",
+                     "SNMP Version", "SNMP Read Community", "SNMP V3 User", "SNMP V3 Password",
+                     "SNMP V3 Private Key"]}
 
     @staticmethod
     def create_snmp_helper(host, json_object_resource, logger):
@@ -43,18 +44,18 @@ class networking_generic_resource_driver(NetworkingBase):
         self._resource_handler._logger.info('Self MATRIX = {0}'.format(self._json_matrix))
         self._resource_handler._logger.info('NEW MATRIX = {0}'.format(json_object))
 
-        merged_matrix={}
+        merged_matrix = {}
         for matrix_key in json_object.keys():
-            matrix=json_object[matrix_key]
+            matrix = json_object[matrix_key]
 
             if not matrix in self._json_matrix.keys():
                 self._json_matrix[matrix_key] = matrix
                 self.Init(matrixJSON)
                 return
 
-            for key,val in matrix.iteritems():
+            for key, val in matrix.iteritems():
                 if not key in self._json_matrix[matrix_key].keys():
-                    #skip extra parameters, compare only existing keys
+                    # skip extra parameters, compare only existing keys
                     pass
                 elif self._json_matrix[matrix_key][key] != matrix[key]:
                     if key in ['User', 'Password', 'ResourceAddress', 'CLI Connection Type', 'ReservationId']:
@@ -62,8 +63,9 @@ class networking_generic_resource_driver(NetworkingBase):
                         self.Init(matrixJSON)
                         return
 
-                    elif key in ['SNMP V3 User', 'SNMP V3 Password', 'SNMP Read Community', 'SNMP Version', 'SNMP V3 Private Key']:
-                        #create new SNMP handler
+                    elif key in ['SNMP V3 User', 'SNMP V3 Password', 'SNMP Read Community', 'SNMP Version',
+                                 'SNMP V3 Private Key']:
+                        # create new SNMP handler
                         current_logger = self._resource_handler._logger
 
                         merged_matrix[matrix_key] = self._json_matrix[matrix_key]
@@ -71,11 +73,11 @@ class networking_generic_resource_driver(NetworkingBase):
 
                         handler_params = self.get_handler_parameters_from_json(merged_matrix)
                         snmp_helper = networking_generic_resource_driver.create_snmp_helper(handler_params['host'],
-                                                                                       json_object['resource'],
-                                                                                       current_logger)
+                                                                                            json_object['resource'],
+                                                                                            current_logger)
                         self._resource_handler._snmp_handler = snmp_helper.snmp
 
-        self._json_matrix=merged_matrix
+        self._json_matrix = merged_matrix
 
     def get_handler_parameters_from_json(self, json_object):
 
@@ -86,17 +88,24 @@ class networking_generic_resource_driver(NetworkingBase):
         if 'User' in json_object['resource']:
             handler_params['username'] = json_object['resource']['User'].encode('ascii', errors='backslashreplace')
             handler_params['password'] = json_object['resource']['Password'].encode('ascii', errors='backslashreplace')
-            handler_params['enable_password'] = json_object['resource']['Enable Password'].encode('ascii', errors='backslashreplace')
-            handler_params['console_server_ip'] = json_object['resource']['Console Server IP Address'].encode('ascii', errors='backslashreplace')
-            handler_params['console_server_user'] = json_object['resource']['Console User'].encode('ascii', errors='backslashreplace')
-            handler_params['console_server_password'] = json_object['resource']['Console Password'].encode('ascii', errors='backslashreplace')
-            handler_params['console_port'] = json_object['resource']['Console Port'].encode('ascii', errors='backslashreplace')
-            handler_params['session_handler_name'] = json_object['resource']['CLI Connection Type'].encode('ascii', errors='backslashreplace')
+            handler_params['enable_password'] = json_object['resource']['Enable Password'].encode('ascii',
+                                                                                                  errors='backslashreplace')
+            handler_params['console_server_ip'] = json_object['resource']['Console Server IP Address'].encode('ascii',
+                                                                                                              errors='backslashreplace')
+            handler_params['console_server_user'] = json_object['resource']['Console User'].encode('ascii',
+                                                                                                   errors='backslashreplace')
+            handler_params['console_server_password'] = json_object['resource']['Console Password'].encode('ascii',
+                                                                                                           errors='backslashreplace')
+            handler_params['console_port'] = json_object['resource']['Console Port'].encode('ascii',
+                                                                                            errors='backslashreplace')
+            handler_params['session_handler_name'] = json_object['resource']['CLI Connection Type'].encode('ascii',
+                                                                                                           errors='backslashreplace')
             if len(handler_params['session_handler_name']) == 0:
                 handler_params['session_handler_name'] = 'auto'
         handler_params['logger_params'] = logger_params
 
-        address_elements = json_object['resource']['ResourceAddress'].encode('ascii', errors='backslashreplace').split(':')
+        address_elements = json_object['resource']['ResourceAddress'].encode('ascii', errors='backslashreplace').split(
+            ':')
         handler_params['host'] = address_elements[0]
         if len(address_elements) > 1:
             handler_params['port'] = address_elements[1]
@@ -121,7 +130,8 @@ class networking_generic_resource_driver(NetworkingBase):
             self.resource_name = json_object['resource']['ResourceName']
 
         if 'reservation' in json_object:
-            if 'ReservationId' in json_object['reservation'] and not json_object['reservation']['ReservationId'] is None:
+            if 'ReservationId' in json_object['reservation'] and \
+                    not json_object['reservation']['ReservationId'] is None:
                 self.reservation_id = json_object['reservation']['ReservationId']
         else:
             json_object['reservation'] = {}
@@ -138,13 +148,12 @@ class networking_generic_resource_driver(NetworkingBase):
             handler_params['logger'] = driver_logger
 
             tmp_snmp_handler = networking_generic_resource_driver.create_snmp_helper(handler_params['host'],
-                                                                                  json_object['resource'],
-                                                                                  driver_logger)
+                                                                                     json_object['resource'],
+                                                                                     driver_logger)
             detected_platform_name = self.__detect_hardware_platform(tmp_snmp_handler)
 
         if detected_platform_name:
             self.handler_name = detected_platform_name
-
 
         self._resource_handler = HandlerFactory.create_handler(self.handler_name, **handler_params)
         self._resource_handler._logger.info('Created resource handle {0}'.format(self.handler_name.upper()))
@@ -157,7 +166,7 @@ class networking_generic_resource_driver(NetworkingBase):
         log_path = qs_logger.get_log_path(self._resource_handler._logger)
         if log_path:
             return 'Log Path: {0}'.format(log_path)
-        # return 'Log Path: {0}'.format(self._resource_handler._logger.handlers[0].baseFilename)
+            # return 'Log Path: {0}'.format(self._resource_handler._logger.handlers[0].baseFilename)
 
     @DriverFunction(alias='Get Inventory', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def GetInventory(self, matrixJSON):
@@ -244,7 +253,8 @@ class networking_generic_resource_driver(NetworkingBase):
                                                            additional_info=additional_info, remove=True)
         return self._resource_handler.normalize_output(result_str)
 
-    @DriverFunction(alias='Send Config Command', category='Hidden Commands', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
+    @DriverFunction(alias='Send Config Command', category='Hidden Commands',
+                    extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def SendConfigCommand(self, matrixJSON, command):
         self.__check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.sendConfigCommand(cmd=command)
