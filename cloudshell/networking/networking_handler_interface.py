@@ -1,9 +1,9 @@
-
 from abc import ABCMeta
 from abc import abstractmethod
-from cloudshell.shell.core.handler_base import HandlerBase
 
-class NetworkingHandlerBase(HandlerBase):
+
+class NetworkingHandlerInterface:
+    __metaclass__ = ABCMeta
 
     @abstractmethod
     def send_command(self, cmd, expected_str=None, timeout=30):
