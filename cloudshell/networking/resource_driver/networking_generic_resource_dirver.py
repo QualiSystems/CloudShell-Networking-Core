@@ -217,7 +217,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Send Command', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
-    def SendCommand(self, matrixJSON, command):
+    def SendCustomCommand(self, matrixJSON, command):
         """
         Send custom command
         :return: result
@@ -256,7 +256,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
 
     @DriverFunction(alias='Send Config Command', category='Hidden Commands',
                     extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
-    def SendConfigCommand(self, matrixJSON, command):
+    def SendCustomConfigCommand(self, matrixJSON, command):
         self.__check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.sendConfigCommand(cmd=command)
         return self._resource_handler.normalize_output(result_str)
