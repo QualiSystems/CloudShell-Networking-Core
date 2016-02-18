@@ -2,9 +2,9 @@ __author__ = 'CoYe'
 
 from abc import ABCMeta
 from abc import abstractmethod
-from cloudshell.shell.core.driver_builder_wrapper import BaseResourceDriver, DriverFunction
 
-class NetworkingBase(BaseResourceDriver):
+class NetworkingResourceDriverInterface:
+    __metaclass__ = ABCMeta
 
     @abstractmethod
     def Add_VLAN(self, matrixJSON, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):

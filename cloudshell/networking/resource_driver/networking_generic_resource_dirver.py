@@ -1,12 +1,13 @@
 import json
 
-from cloudshell.networking.networking_resource_driver_base import NetworkingBase, DriverFunction
+from cloudshell.networking.networking_resource_driver_interface import NetworkingResourceDriverInterface
+from cloudshell.shell.core.driver_builder_wrapper import BaseResourceDriver, DriverFunction
 from cloudshell.shell.core.handler_factory import HandlerFactory
 from cloudshell.core.logger import qs_logger
 from cloudshell.networking.platform_detector.hardware_platform_detector import HardwarePlatformDetector
 
 
-class networking_generic_resource_driver(NetworkingBase):
+class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceDriverInterface):
     REQUIRED_RESORCE_ATTRIBUTES = {
         "resource": ["ResourceAddress", "User", "Password", "Enable Password", "Console Server IP Address",
                      "Console User", "Console Password", "Console Port", "Connection Type",
