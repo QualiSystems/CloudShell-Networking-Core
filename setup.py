@@ -1,35 +1,25 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+import os
 
+with open(os.path.join('version.txt')) as version_file:
+    version_from_file = version_file.read().strip()
 
-def readme():
-    with open('README.rst') as f:
-        return f.read()
+with open('requirements.txt') as f_required:
+    required = f_required.read().splitlines()
 
+with open('test_requirements.txt') as f_tests:
+    required_for_tests = f_tests.read().splitlines()
 
-setup(name='CloudShell-Networking-Core',
-      version='1.1',
-      description='CloudShell Networking Core functionality',
-      long_description=readme(),
-      classifiers=[
-          'Development Status :: 3 - Alpha',
-          'Programming Language :: Python :: 2.7',
-          'Topic :: System :: Distributed Computing',
-          'Operating System :: Microsoft :: Windows',
-          'Intended Audience :: Information Technology',
-          'Operating System :: MacOS',
-          'Operating System :: Microsoft :: Windows',
-          'Operating System :: POSIX',
-          'Operating System :: Unix'
-      ],
-      keywords='cloud QualiSystems',
-      url='https://github.com/QualiSystems/CloudShell-Core',
-      author='Boris Modylevsky',
-      author_email='borismod@gmail.com',
-      license='Apache 2.0',
-      packages=['CloudShell-Core'],
-      install_requires=[],
-      test_suite='',
-      tests_require=[],
-      entry_points={},
-      include_package_data=True,
-      zip_safe=False)
+setup(
+    name='cloudshell-networking',
+    url='http://www.qualisystems.com/',
+    author='QualiSystems',
+    author_email='info@qualisystems.com',
+    packages=find_packages(),
+    install_requires=required,
+    tests_require=required_for_tests,
+    version=version_from_file,
+    description='QualiSystems CloudShell Networking Python Package',
+    include_package_data = True
+)
+
