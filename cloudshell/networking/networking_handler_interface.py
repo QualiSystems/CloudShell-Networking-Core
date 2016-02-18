@@ -6,6 +6,14 @@ class NetworkingHandlerInterface:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def add_vlan(self, vlan_range, port_list, port_mode, additional_info):
+        pass
+
+    @abstractmethod
+    def remove_vlan(self, vlan_range, port_list, port_mode, additional_info):
+        pass
+
+    @abstractmethod
     def send_command(self, cmd, expected_str=None, timeout=30):
         pass
 
