@@ -228,30 +228,30 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Add Vlan', category='Hidden Commands', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
-    def Add_VLAN(self, matrixJSON, ports, vlan_range, switchport_type, additional_info):
+    def Add_VLAN(self, matrixJSON, ports, vlan_range, port_mode, additional_info):
         """
         Assign vlan or vlan range to the certain interface
         :return: result
         :rtype: string
         """
         self.__check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.configure_vlan(port_list=ports,
+        result_str = self._resource_handler.add_vlan(port_list=ports,
                                                            vlan_range=vlan_range.replace(' ', ''),
-                                                           switchport_type=switchport_type,
-                                                           additional_info=additional_info, remove=False)
+                                                           port_mode=port_mode,
+                                                           additional_info=additional_info)
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Remove Vlan', category='Hidden Commands', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
-    def Remove_VLAN(self, matrixJSON, ports, vlan_range, switchport_type, additional_info):
+    def Remove_VLAN(self, matrixJSON, ports, vlan_range, port_mode, additional_info):
         """
         Remove vlan or vlan range from the certain interface
         :return: result
         :rtype: string
         """
         self.__check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.configure_vlan(port_list=ports,
-                                                           vlan_range=vlan_range, switchport_type=switchport_type,
-                                                           additional_info=additional_info, remove=True)
+        result_str = self._resource_handler.remove_vlan(port_list=ports,
+                                                           vlan_range=vlan_range, port_mode=port_mode,
+                                                           additional_info=additional_info)
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Send Config Command', category='Hidden Commands',
