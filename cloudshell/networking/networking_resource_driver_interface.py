@@ -15,7 +15,7 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def SendCustomCommand(self, command):
+    def SendCustomCommand(self, matrixJSON, command):
         pass
 
     @abstractmethod
