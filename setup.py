@@ -15,7 +15,7 @@ setup(
     url='https://github.com/QualiSystems/cloudshell-networking',
     author='QualiSystems',
     author_email='info@qualisystems.com',
-    packages=['cloudshell-networking'],
+    packages=find_packages(),
     install_requires=required,
     test_suite='tests',
     tests_require=required_for_tests,

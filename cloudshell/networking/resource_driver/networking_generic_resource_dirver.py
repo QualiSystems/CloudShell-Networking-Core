@@ -10,7 +10,7 @@ from cloudshell.networking.platform_detector.hardware_platform_detector import H
 class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceDriverInterface):
     REQUIRED_RESORCE_ATTRIBUTES = {
         "resource": ["ResourceAddress", "User", "Password", "Enable Password", "Console Server IP Address",
-                     "Console User", "Console Password", "Console Port", "Connection Type",
+                     "Console User", "Console Password", "Console Port", "CLI Connection Type",
                      "SNMP Version", "SNMP Read Community", "SNMP V3 User", "SNMP V3 Password",
                      "SNMP V3 Private Key"]}
 
