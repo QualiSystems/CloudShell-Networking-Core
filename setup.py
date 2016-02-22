@@ -12,14 +12,15 @@ with open('test_requirements.txt') as f_tests:
 
 setup(
     name='cloudshell-networking',
-    url='https://github.com/QualiSystems/cloudshell-networking',
+    url='http://www.qualisystems.com/',
     author='QualiSystems',
     author_email='info@qualisystems.com',
-    packages=['cloudshell-networking'],
+    packages=find_packages(),
     install_requires=required,
-    test_suite='tests',
     tests_require=required_for_tests,
     version=version_from_file,
-    description='QualiSystems Python package',
+	package_data={'': ['*.txt']},
+    description='QualiSystems networking package',
     include_package_data = True
 )
+
