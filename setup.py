@@ -19,7 +19,8 @@ setup(
     install_requires=required,
     tests_require=required_for_tests,
     version=version_from_file,
-    description='QualiSystems CloudShell Networking Python Package',
+	package_data={'': ['*.txt']},
+    description='QualiSystems networking package',
     include_package_data = True
 )
 

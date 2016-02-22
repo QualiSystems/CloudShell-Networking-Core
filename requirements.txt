@@ -1,1 +1,1 @@
-CloudShell-Core
+cloudshell-shell-core
