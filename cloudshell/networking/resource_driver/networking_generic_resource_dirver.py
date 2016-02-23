@@ -1,11 +1,28 @@
 import json
 
+from threading import Thread, Lock
+
 from cloudshell.networking.networking_resource_driver_interface import NetworkingResourceDriverInterface
 from cloudshell.shell.core.driver_builder_wrapper import BaseResourceDriver, DriverFunction
 from cloudshell.shell.core.handler_factory import HandlerFactory
 from cloudshell.core.logger import qs_logger
 from cloudshell.networking.platform_detector.hardware_platform_detector import HardwarePlatformDetector
 
+
+def lock_driver_method(function_pointer):
+    mutex = Lock()
+
+    def function_wrapper(**kwargs):
+        mutex.acquire()
+        output_data = None
+        try:
+            output_data = function_pointer(**kwargs)
+        finally:
+            mutex.release()
+
+        return output_data
+
+    return function_wrapper
 
 class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceDriverInterface):
     REQUIRED_RESORCE_ATTRIBUTES = {
