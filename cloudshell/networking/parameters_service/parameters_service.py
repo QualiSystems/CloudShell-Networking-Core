@@ -2,9 +2,13 @@ __author__ = 'g8y3e'
 
 import re
 
+
 class ParametersService:
     @staticmethod
     def get_validate_list(command_tamplate, properties_list):
+        if not isinstance(properties_list, list):
+            properties_list = [properties_list]
+            
         validate_result = ParametersService._validate(properties_list, command_tamplate.get_re_string_list())
         if validate_result[0]:
             return command_tamplate.get_command(*properties_list)
@@ -14,8 +18,7 @@ class ParametersService:
     @staticmethod
     def _validate(properties_list, re_string_list):
         if len(properties_list) != len(re_string_list):
-            return 'Need ' + str(len(re_string_list)) + ' parameters, but you sended - ' + \
-                   str(len(properties_list));
+            return (False, -1)
 
         if len(properties_list) == 0:
             return (True, -1)

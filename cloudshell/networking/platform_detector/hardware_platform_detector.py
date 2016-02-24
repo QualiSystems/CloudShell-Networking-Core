@@ -26,6 +26,7 @@ class HardwarePlatformDetector:
         """
         Create snmp handler version 2 or 1
         """
+        self._logger.info("Initiate SNMP v2 with IP: {0}, Communiti: {1}".format(ip, community))
         if community == '':
             self._logger.error('"SNMP Read Community" parameter is empty!')
             raise Exception('"SNMP Read Community" parameter is empty!')
