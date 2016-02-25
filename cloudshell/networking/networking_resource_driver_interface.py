@@ -19,6 +19,10 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
+    def SendCustomConfigCommand(self, matrixJSON, command):
+        pass
+
+    @abstractmethod
     def Save(self, matrixJSON, folder_path, configuration_type):
         pass
 
@@ -35,5 +39,5 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def Shutdown(self):
+    def Shutdown(self, matrixJSON):
         pass

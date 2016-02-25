@@ -52,7 +52,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
             return snmp_handler._detect_hardware_platform()
         return None
 
-    def __check_for_attributes_changes(self, matrixJSON):
+    def _check_for_attributes_changes(self, matrixJSON):
         """Verify if resource and/re reservation details changed, update handler accordingly
 
         :param matrixJSON:
@@ -193,7 +193,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :return: result
         :rtype: string
         """
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result = self._resource_handler.discover_snmp()
         return self._resource_handler.normalize_output(result)
 
@@ -204,7 +204,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :return: result
         :rtype: string
         """
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.update_firmware(remote_host=remote_host, file_path=file_path)
         self._resource_handler.disconnect()
         return self._resource_handler.normalize_output(result_str)
@@ -217,7 +217,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :rtype: string
         """
 
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.backup_configuration(destination_host=folder_path,
                                                                  source_filename=configuration_type)
         return self._resource_handler.normalize_output(result_str)
@@ -229,7 +229,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :return: success string
         :rtype: string
         """
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.restore_configuration(source_file=path, clear_config=restore_method)
         return self._resource_handler.normalize_output(result_str)
 
@@ -240,7 +240,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :return: result
         :rtype: string
         """
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.send_command(cmd=command)
         return self._resource_handler.normalize_output(result_str)
 
@@ -251,7 +251,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :return: result
         :rtype: string
         """
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.add_vlan(port_list=ports,
                                                            vlan_range=vlan_range.replace(' ', ''),
                                                            port_mode=port_mode,
@@ -265,7 +265,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :return: result
         :rtype: string
         """
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.remove_vlan(port_list=ports,
                                                            vlan_range=vlan_range, port_mode=port_mode,
                                                            additional_info=additional_info)
@@ -274,7 +274,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
     @DriverFunction(alias='Send Config Command', category='Hidden Commands',
                     extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def SendCustomConfigCommand(self, matrixJSON, command):
-        self.__check_for_attributes_changes(matrixJSON)
+        self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.sendConfigCommand(cmd=command)
         return self._resource_handler.normalize_output(result_str)
 
@@ -283,5 +283,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         self.Init(matrix_json)
         return 'Driver reset completed'
 
-    def Shutdown(self):
+    def Shutdown(self, matrixJSON):
         pass
+
+
