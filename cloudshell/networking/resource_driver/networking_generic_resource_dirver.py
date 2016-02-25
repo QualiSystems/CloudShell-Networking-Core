@@ -10,16 +10,16 @@ from cloudshell.networking.platform_detector.hardware_platform_detector import H
 
 network_driver_mutex = Lock()
 def lock_driver_method(function_pointer):
-    def function_wrapper(**kwargs):
+    def function_wrapper(*args, **kwargs):
         network_driver_mutex.acquire()
         output_data = None
         try:
-            output_data = function_pointer(**kwargs)
+            print
+            output_data = function_pointer(*args, **kwargs)
         finally:
             network_driver_mutex.release()
 
         return output_data
-
     return function_wrapper
 
 class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceDriverInterface):
