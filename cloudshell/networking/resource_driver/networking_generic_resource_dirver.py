@@ -8,17 +8,15 @@ from cloudshell.shell.core.handler_factory import HandlerFactory
 from cloudshell.core.logger import qs_logger
 from cloudshell.networking.platform_detector.hardware_platform_detector import HardwarePlatformDetector
 
-
+network_driver_mutex = Lock()
 def lock_driver_method(function_pointer):
-    mutex = Lock()
-
     def function_wrapper(**kwargs):
-        mutex.acquire()
+        network_driver_mutex.acquire()
         output_data = None
         try:
             output_data = function_pointer(**kwargs)
         finally:
-            mutex.release()
+            network_driver_mutex.release()
 
         return output_data
 
