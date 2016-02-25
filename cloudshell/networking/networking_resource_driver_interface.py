@@ -7,33 +7,45 @@ class NetworkingResourceDriverInterface:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def Add_VLAN(self, matrixJSON, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):
+    def add_vlan(self, matrixJSON, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):
         pass
 
     @abstractmethod
-    def Remove_VLAN(self, matrixJSON, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):
+    def remove_vlan(self, matrixJSON, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):
         pass
 
     @abstractmethod
-    def SendCustomCommand(self, matrixJSON, command):
+    def send_custom_command(self, matrixJSON, command):
         pass
 
     @abstractmethod
-    def Save(self, matrixJSON, folder_path, configuration_type):
+    def send_custom_config_command(self, matrixJSON, command):
         pass
 
     @abstractmethod
-    def Restore(self, path, restore_method):
+    def save(self, matrixJSON, folder_path, configuration_type):
         pass
 
     @abstractmethod
-    def GetInventory(self, matrixJSON):
+    def restore(self, path, restore_method):
         pass
 
     @abstractmethod
-    def UpdateFirmware(self, matrixJSON, remote_host, file_path):
+    def get_inventory(self, matrixJSON):
         pass
 
     @abstractmethod
-    def Shutdown(self):
+    def load_firmware(self, matrixJSON, remote_host, file_path):
+        pass
+
+    @abstractmethod
+    def shutdown(self):
+        pass
+
+    @abstractmethod
+    def connect(self):
+        pass
+
+    @abstractmethod
+    def disconnect(self):
         pass
