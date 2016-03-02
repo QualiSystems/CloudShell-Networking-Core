@@ -27,7 +27,7 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def Restore(self, path, restore_method):
+    def Restore(self, path, config_type, restore_method):
         pass
 
     @abstractmethod

@@ -18,7 +18,7 @@ class NetworkingHandlerInterface:
         pass
 
     @abstractmethod
-    def restore_configuration(self, source_file, clear_config='override'):
+    def restore_configuration(self, source_file, config_type, clear_config='override'):
         pass
 
     @abstractmethod
