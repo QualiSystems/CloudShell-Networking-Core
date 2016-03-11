@@ -228,7 +228,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         :rtype: string
         """
         self._check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.restore_configuration(source_file=path, config_type=config_type, clear_config=restore_method)
+        result_str = self._resource_handler.restore_configuration(source_file=path, configuration_type=config_type, clear_config=restore_method)
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Send Command', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
