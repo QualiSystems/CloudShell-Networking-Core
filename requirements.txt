@@ -1,1 +1,2 @@
-cloudshell-shell-core
+ipcalc
+cloudshell-shell-core<2.0
