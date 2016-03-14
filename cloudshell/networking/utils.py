@@ -111,9 +111,9 @@ def verifyIpInRange(ip_address, start_addr, end_addr):
     :return: True/False
     """
 
-    start_list =  map(int, start_addr.split('.'))
-    end_list =  map(int, end_addr.split('.'))
-    ip_list =  map(int, ip_address.split('.'))
+    start_list = map(int, start_addr.split('.'))
+    end_list = map(int, end_addr.split('.'))
+    ip_list = map(int, ip_address.split('.'))
 
     for i in range(len(ip_list)):
         if (ip_list[i] < start_list[i]) or (ip_list[i] > end_list[i]):
