@@ -218,7 +218,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.backup_configuration(destination_host=folder_path,
                                                                  source_filename=configuration_type)
-        self._resource_handler._logger.info(result_str)
+        return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Restore', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def Restore(self, matrixJSON, path, config_type, restore_method='Override'):
@@ -229,7 +229,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         """
         self._check_for_attributes_changes(matrixJSON)
         result_str = self._resource_handler.restore_configuration(source_file=path, config_type=config_type, clear_config=restore_method)
-        return self._resource_handler.normalize_output(result_str)
+        self._resource_handler._logger.info(result_str)
 
     @DriverFunction(alias='Send Command', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def SendCustomCommand(self, matrixJSON, command):
