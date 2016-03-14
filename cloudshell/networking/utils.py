@@ -91,9 +91,11 @@ def validateVlanRange(vlan_range):
     for vlan in vlan_range.split(','):
         if '-' in vlan:
             for vlan_range_border in vlan.split('-'):
-                validateVlanNumber(vlan_range_border)
+                result = validateVlanNumber(vlan_range_border)
         else:
-            validateVlanNumber(vlan)
+            result = validateVlanNumber(vlan)
+        if not result:
+            return False
     return True
 
 def validateSpanningTreeType(data):
