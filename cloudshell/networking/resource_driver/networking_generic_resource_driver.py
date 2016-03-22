@@ -1,6 +1,5 @@
 import json
-
-from threading import Thread, Lock
+from threading import Lock
 
 from cloudshell.networking.networking_resource_driver_interface import NetworkingResourceDriverInterface
 from cloudshell.shell.core.driver_builder_wrapper import BaseResourceDriver, DriverFunction
@@ -273,7 +272,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
                     extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def SendCustomConfigCommand(self, matrixJSON, command):
         self._check_for_attributes_changes(matrixJSON)
-        result_str = self._resource_handler.sendConfigCommand(cmd=command)
+        result_str = self._resource_handler.send_config_command(cmd=command)
         return self._resource_handler.normalize_output(result_str)
 
     @DriverFunction(alias='Reset Driver', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
