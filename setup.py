@@ -20,6 +20,7 @@ setup(
     test_suite='tests',
     tests_require=required_for_tests,
     version=version_from_file,
-    description='QualiSystems Python package',
+    description='QualiSystems networking package',
     include_package_data = True
 )
+
