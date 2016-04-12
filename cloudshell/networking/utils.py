@@ -1,10 +1,10 @@
 __author__ = 'oei'
 
 import re
-from cloudshell.cli.file_helper import *
 import socket
 import struct
 import math
+from cloudshell.cli.old.file_helper import *
 
 def normalizePath(path):
     """
