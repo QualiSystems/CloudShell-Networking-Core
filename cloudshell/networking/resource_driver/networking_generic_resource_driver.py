@@ -97,6 +97,8 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
     def get_handler_parameters_from_json(self, json_object):
 
         logger_params = {'handler_name': self.resource_name,
+                         'qs_server_address': self.qs_server_address,
+                         #'qs_server_port': self.qs_server_port,
                          'reservation_details': json_object['reservation']}
         handler_params = {}
 
@@ -129,10 +131,15 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
 
     @DriverFunction(extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def Init(self, matrixJSON):
-        detected_platform_name = None
         json_object = json.loads(matrixJSON)
+        detected_platform_name = None
         self._json_matrix = json_object
         self.resource_name = 'generic_resource'
+        if not hasattr(self, 'qs_server_address'):
+            if 'connectivityInfo' in json_object and 'ServerAddress' in json_object['connectivityInfo']:
+                self.qs_server_address = json_object['connectivityInfo']['ServerAddress']
+            else:
+                raise Exception('networking_generic_resource_driver', "CloudShell Server address couldn't be found")
         if not self.handler_name:
             self.handler_name = 'generic_driver'
 
@@ -174,6 +181,7 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         self._resource_handler._logger.info('Created resource handle {0}'.format(self.handler_name.upper()))
 
         self._resource_handler.set_parameters(json_object)
+        self._resource_handler._qs_server_address = self.qs_server_address
 
         if self.temp_snmp_handler:
             self._resource_handler._snmp_handler = self.temp_snmp_handler
@@ -181,7 +189,6 @@ class networking_generic_resource_driver(BaseResourceDriver, NetworkingResourceD
         log_path = qs_logger.get_log_path(self._resource_handler._logger)
         if log_path:
             return 'Log Path: {0}'.format(log_path)
-            # return 'Log Path: {0}'.format(self._resource_handler._logger.handlers[0].baseFilename)
 
     @DriverFunction(alias='Get Inventory', extraMatrixRows=REQUIRED_RESORCE_ATTRIBUTES)
     def GetInventory(self, matrixJSON):
