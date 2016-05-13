@@ -4,15 +4,14 @@ import re
 import socket
 import struct
 import math
-from cloudshell.cli.old.file_helper import *
 
 def normalizePath(path):
     """
     :param path:
     :return:
     """
-    ret_path = re.sub ('#', '%23', path)
-    ret_path = re.sub (' ', '%20', ret_path)
+    ret_path = re.sub('#', '%23', path)
+    ret_path = re.sub(' ', '%20', ret_path)
 
     return ret_path
 
@@ -220,24 +219,6 @@ def getMatrixFromString(data_str):
 
     return data_matrix
 
-
-def isSameListCommandInFile(filename, expect_list):
-    data = read_data_from_file(filename)
-
-    data_list = data.split('\n')
-    data_list = filter(lambda value:
-                       value != '',
-                       data_list)
-
-
-    if len(data_list) != len(expect_list):
-        return False
-    elif len(data_list) == len(expect_list):
-        for index in range(0, len(data_list)):
-            if data_list[index] != expect_list[index]:
-                return False
-
-        return True
 
 def shieldString(data_str):
     iter_object = re.finditer('[\{\}\(\)\[\]\|]', data_str)
