@@ -1,4 +1,4 @@
-from cloudshell.shell.core.context.driver_context import AutoLoadResource
+from cloudshell.shell.core.driver_context import AutoLoadResource
 from cloudshell.networking.autoload.networking_autoload_resource_attributes import GenericResourceAttribute, \
     NetworkingStandardChassisAttributes, NetworkingStandardModuleAttributes, NetworkingStandardPortAttributes, \
     NetworkingStandardPortChannelAttributes, NetworkingStandardPowerPortAttributes
