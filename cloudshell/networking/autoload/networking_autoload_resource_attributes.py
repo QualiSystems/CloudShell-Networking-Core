@@ -7,7 +7,7 @@ class GenericResourceAttribute:
 
 
 class NetworkingStandardRootAttributes(GenericResourceAttribute):
-    def __init__(self, relative_path='', model='', vendor='Cisco', system_name='', location='',
+    def __init__(self, relative_path='', model='', vendor='', system_name='', location='',
                  contact='', version=''):
         self.vendor = AutoLoadAttribute(relative_path, 'Vendor', vendor)
         self.system_name = AutoLoadAttribute(relative_path, 'System Name', system_name)
