@@ -1,137 +1,62 @@
 from cloudshell.shell.core.driver_context import AutoLoadResource
-from cloudshell.networking.autoload.networking_autoload_resource_attributes import ChassisAttributes, \
-    PowerPortAttributes, PortAttributes, ModuleAttributes, PortChannelAttributes, GenericResourceAttributes
+from cloudshell.networking.autoload.networking_autoload_resource_attributes import GenericResourceAttribute, \
+    NetworkingStandardChassisAttributes, NetworkingStandardModuleAttributes, NetworkingStandardPortAttributes, \
+    NetworkingStandardPortChannelAttributes, NetworkingStandardPowerPortAttributes
 
 
-class GenericResource(AutoLoadResource):
-    ATTRIBUTES_CLASS = GenericResourceAttributes
-    MODEL = 'Generic Resource'
-    NAME_TEMPLATE = 'Resource{0}'
-    RELATIVE_PATH_TEMPLATE = '{0}/{1}'
+class GenericResource:
+    def __init__(self, name='', model='', relative_path='', uniqe_id=None, **attributes_dict):
+        self.name = name
+        self.model = model
+        self.relative_path = relative_path
+        self.uniqe_id = uniqe_id
+        if not hasattr(self, 'attributes_class'):
+            self.attributes_class = GenericResourceAttribute
+        self.attributes = self.attributes_class(self.relative_path, **attributes_dict)
 
-    def __init__(self, element_id, name=None, model=None, relative_path=None, unique_id=None,
-                 **attributes_dict):
-
-        self.element_id = element_id
-        if name is not None and name != '':
-            self.name = name
+    def get_autoload_resource_details(self):
+        if self.model == '' or self.name == '' or self.relative_path == '':
+            raise Exception('Cisco Generic SNMP Autoload', 'Resources details not found!')
+        if self.uniqe_id:
+            result = AutoLoadResource(self.model, self.name, self.relative_path, self.uniqe_id)
         else:
-            self.name = self.NAME_TEMPLATE.format(self.element_id)
-        if model is not None and model != '':
-            self.model = model
-        else:
-            self.model = self.MODEL
-        if relative_path is not None and relative_path != '':
-            self.relative_address = relative_path
-        else:
-            self.relative_address = None
+            result = AutoLoadResource(self.model, self.name, self.relative_path)
+        return result
 
-        if unique_id is not None and unique_id != '':
-            self.unique_identifier = unique_id
+    def get_autoload_resource_attributes(self):
+        return self.attributes.get_autoload_resource_attributes()
 
-        if attributes_dict is not None and len(attributes_dict) > 0:
-            self.attributes = self.ATTRIBUTES_CLASS(**attributes_dict)
-        else:
-            self.attributes = []
 
-    def build_attributes(self, attributes_dict):
-        if self.attributes is None or len(self.attributes) == 0:
-            self.attributes = self.ATTRIBUTES_CLASS(**attributes_dict)
-
-    def build_relative_path(self, parent_path):
-        if self.relative_address is None or self.relative_address == '':
-            if parent_path is not None:
-                self.relative_address = self.RELATIVE_PATH_TEMPLATE.format(parent_path, self.element_id)
-            else:
-                self.relative_address = self.RELATIVE_PATH_TEMPLATE.format(self.element_id)
-        self._set_relative_path_to_attributes()
-
-    def _build_relative_path_for_childs(self, child_resources, parent_path):
-        if child_resources is not None and len(child_resources) > 0:
-            for resource in child_resources:
-                resource.build_relative_path(parent_path)
-
-    def _set_relative_path_to_attributes(self):
-        for attribute in self.attributes:
-            attribute.relative_address = self.relative_address
 
 
 class Chassis(GenericResource):
-    ATTRIBUTES_CLASS = ChassisAttributes
-    MODEL = 'Generic Chassis'
-    NAME_TEMPLATE = 'Chassis{0}'
-    RELATIVE_PATH_TEMPLATE = '{0}'
-
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
-        self.modules = []
-        self.ports = []
-        self.power_ports = []
-
-    def build_relative_path(self, parent_path):
-        GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_childs(self.modules, self.relative_address)
-        self._build_relative_path_for_childs(self.ports, self.relative_address)
-        self._build_relative_path_for_childs(self.power_ports, self.relative_address)
+    def __init__(self, name='', model='Generic Chassis', relative_path='', **attributes_dict):
+        if name == '':
+            name = 'Chassis {0}'.format(relative_path)
+        self.attributes_class = NetworkingStandardChassisAttributes
+        GenericResource.__init__(self, name, model, relative_path, **attributes_dict)
 
 
 class PowerPort(GenericResource):
-    ATTRIBUTES_CLASS = PowerPortAttributes
-    MODEL = 'Generic Power Port'
-    NAME_TEMPLATE = 'PP{0}'
-    RELATIVE_PATH_TEMPLATE = '{0}/PP{1}'
-
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
+    def __init__(self, name='', model='Generic Power Port', relative_path='', **attributes_dict):
+        self.attributes_class = NetworkingStandardPowerPortAttributes
+        GenericResource.__init__(self, name, model, relative_path, **attributes_dict)
 
 
 class Port(GenericResource):
-    ATTRIBUTES_CLASS = PortAttributes
-    MODEL = 'Generic Port'
-    NAME_TEMPLATE = '{0}'
-    RELATIVE_PATH_TEMPLATE = '{0}/{1}'
-
-    def __init__(self, element_id, name, *args, **kwargs):
-        GenericResource.__init__(self, element_id, name=name)
-
-
-class PortChannel(GenericResource):
-    ATTRIBUTES_CLASS = PortChannelAttributes
-    MODEL = 'Generic Port Channel'
-    NAME_TEMPLATE = '{0}'
-    RELATIVE_PATH_TEMPLATE = 'PC{0}'
-
-    def __init__(self, element_id, name, *args, **kwargs):
-        GenericResource.__init__(self, element_id, name=name)
+    def __init__(self, name='', model='Generic Port', relative_path='', **attributes_dict):
+        port_name = name.replace('/', '-').replace('\s+', '')
+        self.attributes_class = NetworkingStandardPortAttributes
+        GenericResource.__init__(self, port_name, model, relative_path, **attributes_dict)
 
 
 class Module(GenericResource):
-    ATTRIBUTES_CLASS = ModuleAttributes
-    MODEL = 'Generic Module'
-    NAME_TEMPLATE = 'Module{0}'
-    RELATIVE_PATH_TEMPLATE = '{0}/{1}'
-
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
-        self.sub_modules = []
-        self.ports = []
-
-    def build_relative_path(self, parent_path):
-        GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_childs(self.sub_modules, self.relative_address)
-        self._build_relative_path_for_childs(self.ports, self.relative_address)
+    def __init__(self, name='', model='Generic Module', relative_path='', **attributes_dict):
+        self.attributes_class = NetworkingStandardModuleAttributes
+        GenericResource.__init__(self, name, model, relative_path, **attributes_dict)
 
 
-class SubModule(GenericResource):
-    ATTRIBUTES_CLASS = ModuleAttributes
-    MODEL = 'Generic Sub Module'
-    NAME_TEMPLATE = 'SubModule{0}'
-    RELATIVE_PATH_TEMPLATE = '{0}/{1}'
-
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
-        self.ports = []
-
-    def build_relative_path(self, parent_path):
-        GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_childs(self.ports, self.relative_address)
+class PortChannel(GenericResource):
+    def __init__(self, name='', model='Generic Port Channel', relative_path='', **attributes_dict):
+        self.attributes_class = NetworkingStandardPortChannelAttributes
+        GenericResource.__init__(self, name, model, relative_path, **attributes_dict)

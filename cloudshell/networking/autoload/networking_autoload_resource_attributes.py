@@ -1,89 +1,64 @@
 from cloudshell.shell.core.driver_context import AutoLoadAttribute
 
-
-class GenericResourceAttributes(list):
-    _DEFAULT_VALUE = ''
-    _DEFAULT_VALUES = {}
-
-    def __init__(self, relative_path=None, **kwargs):
-        self._default_values = {}
-        self.handle_attributes_dict(relative_path, kwargs)
-
-    def append_attribute(self, relative_path, attribute_name, attribute_param):
-        if callable(attribute_param):
-            attribute_value = attribute_param()
-        else:
-            attribute_value = attribute_param
-
-        attribute = AutoLoadAttribute(relative_path, attribute_name, attribute_value)
-        self.append(attribute)
-
-    def get_attributes_list(self):
-        return [getattr(self, attr) for attr in dir(self) if attr.isupper() and not attr.startswith('_')]
-
-    def handle_attributes_dict(self, relative_path, attr_dict):
-        final_dict = dict((attr, self._DEFAULT_VALUE) for attr in self.get_attributes_list())
-        final_dict.update(self._DEFAULT_VALUES)
-        final_dict.update(attr_dict)
-        for attr_name, attr_value in final_dict.iteritems():
-            self.append_attribute(relative_path, attr_name, attr_value)
+class GenericResourceAttribute:
+    def get_autoload_resource_attributes(self):
+        attributes_dict = self.__dict__.copy()
+        return attributes_dict.values()
 
 
-class RootAttributes(GenericResourceAttributes):
-    VENDOR = 'Vendor'
-    SYSTEM_NAME = 'System Name'
-    LOCATION = 'Location'
-    CONTACT_NAME = 'Contact Name'
-    OS_VERSION = 'OS Version'
-    MODEL = 'Model'
+class NetworkingStandardRootAttributes(GenericResourceAttribute):
+    def __init__(self, relative_path='', model='', vendor='', system_name='', location='',
+                 contact='', version=''):
+        self.vendor = AutoLoadAttribute(relative_path, 'Vendor', vendor)
+        self.system_name = AutoLoadAttribute(relative_path, 'System Name', system_name)
+        self.location = AutoLoadAttribute(relative_path, 'Location', location)
+        self.contact = AutoLoadAttribute(relative_path, 'Contact Name', contact)
+        self.version = AutoLoadAttribute(relative_path, 'OS Version', version)
+        self.model = AutoLoadAttribute(relative_path, 'Model', model)
 
 
-class ChassisAttributes(GenericResourceAttributes):
-    SERIAL_NUMBER = 'Serial Number'
-    MODEL = 'Model'
+class NetworkingStandardChassisAttributes(GenericResourceAttribute):
+    def __init__(self, relative_path, serial_number='', chassis_model=''):
+        self.serial_number = AutoLoadAttribute(relative_path, 'Serial Number', serial_number)
+        self.model = AutoLoadAttribute(relative_path, 'Model', chassis_model)
 
 
-class ModuleAttributes(GenericResourceAttributes):
-    SERIAL_NUMBER = 'Serial Number'
-    MODEL = 'Model'
-    VERSION = 'Version'
+class NetworkingStandardModuleAttributes(GenericResourceAttribute):
+    def __init__(self, relative_path, serial_number='', module_model='', version=''):
+        self.serial_number = AutoLoadAttribute(relative_path, 'Serial Number', serial_number)
+        self.module_model = AutoLoadAttribute(relative_path, 'Model', module_model)
+        self.version = AutoLoadAttribute(relative_path, 'Version', version)
 
 
-class PortAttributes(GenericResourceAttributes):
-    PROTOCOL_TYPE = 'Protocol Type'
-    PORT_DESCRIPTION = 'Port Description'
-    L2_PROTOCOL_TYPE = 'L2 Protocol Type'
-    MAC_ADDRESS = 'MAC Address'
-    MTU = 'MTU'
-    DUPLEX = 'Duplex'
-    AUTO_NEGOTIATION = 'Auto Negotiation'
-    BANDWIDTH = 'Bandwidth'
-    ADJACENT = 'Adjacent'
-    IPV4_ADDRESS = 'IPv4 Address'
-    IPV6_ADDRESS = 'IPv6 Address'
-
-    def __init__(self, relative_path, **kwargs):
-        self._DEFAULT_VALUES[self.PROTOCOL_TYPE] = 'Transparent'
-        self._DEFAULT_VALUES[self.L2_PROTOCOL_TYPE] = 'ethernet'
-        self._DEFAULT_VALUES[self.MTU] = 0
-        self._DEFAULT_VALUES[self.BANDWIDTH] = 0
-        super(PortAttributes, self).__init__(relative_path, **kwargs)
+class NetworkingStandardPortAttributes(GenericResourceAttribute):
+    def __init__(self, relative_path, protocol_type='Transparent', description='', l2_protocol_type='ethernet', mac='',
+                 mtu=0, bandwidth=0, adjacent='', ipv4_address='', ipv6_address='', duplex='', auto_negotiation=''):
+        self.protocol_type = AutoLoadAttribute(relative_path, 'Protocol Type', protocol_type)
+        self.port_description = AutoLoadAttribute(relative_path, 'Port Description', description)
+        self.l2_protocol_type = AutoLoadAttribute(relative_path, 'L2 Protocol Type', l2_protocol_type)
+        self.mac = AutoLoadAttribute(relative_path, 'MAC Address', mac)
+        self.mtu = AutoLoadAttribute(relative_path, 'MTU', mtu)
+        self.duplex = AutoLoadAttribute(relative_path, 'Duplex', duplex)
+        self.auto_negotiation = AutoLoadAttribute(relative_path, 'Auto Negotiation', auto_negotiation)
+        self.bandwidth = AutoLoadAttribute(relative_path, 'Bandwidth', bandwidth)
+        self.adjacent = AutoLoadAttribute(relative_path, 'Adjacent', adjacent)
+        self.ipv4_address = AutoLoadAttribute(relative_path, 'IPv4 Address', ipv4_address)
+        self.ipv6_address = AutoLoadAttribute(relative_path, 'IPv6 Address', ipv6_address)
 
 
-class PortChannelAttributes(GenericResourceAttributes):
-    PROTOCOL_TYPE = 'Protocol Type'
-    PORT_DESCRIPTION = 'Port Description'
-    ASSOCIATED_PORTS = 'Associated Ports'
-    IPV4_ADDRESS = 'IPv4 Address'
-    IPV6_ADDRESS = 'IPv6 Address'
-
-    def __init__(self, relative_path, **kwargs):
-        self._DEFAULT_VALUES[self.PROTOCOL_TYPE] = 'Transparent'
-        super(PortChannelAttributes, self).__init__(relative_path, **kwargs)
+class NetworkingStandardPortChannelAttributes(GenericResourceAttribute):
+    def __init__(self, relative_path, protocol_type='Transparent', description='', associated_ports='',
+                 ipv4_address='', ipv6_address=''):
+        self.protocol_type = AutoLoadAttribute(relative_path, 'Protocol Type', protocol_type)
+        self.description = AutoLoadAttribute(relative_path, 'Port Description', description)
+        self.associated_ports = AutoLoadAttribute(relative_path, 'Associated Ports', associated_ports)
+        self.ipv4_address = AutoLoadAttribute(relative_path, 'IPv4 Address', ipv4_address)
+        self.ipv6_address = AutoLoadAttribute(relative_path, 'IPv6 Address', ipv6_address)
 
 
-class PowerPortAttributes(GenericResourceAttributes):
-    SERIAL_NUMBER = 'Serial Number'
-    MODEL = 'Model'
-    VERSION = 'Version'
-    PORT_DESCRIPTION = 'Port Description'
+class NetworkingStandardPowerPortAttributes(GenericResourceAttribute):
+    def __init__(self, relative_path, serial_number='', port_model='', version='', description=''):
+        self.serial_number = AutoLoadAttribute(relative_path, 'Serial Number', serial_number)
+        self.port_model = AutoLoadAttribute(relative_path, 'Model', port_model)
+        self.version = AutoLoadAttribute(relative_path, 'Version', version)
+        self.description = AutoLoadAttribute(relative_path, 'Port Description', description)
