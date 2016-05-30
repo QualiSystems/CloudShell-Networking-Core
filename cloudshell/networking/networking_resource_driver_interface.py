@@ -7,11 +7,7 @@ class NetworkingResourceDriverInterface:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def add_vlan(self, context, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):
-        pass
-
-    @abstractmethod
-    def remove_vlan(self, context, ports, VLAN_Ranges, VLAN_Mode, Additional_Info):
+    def ApplyConnectivityChanges(self, context, request):
         pass
 
     @abstractmethod
