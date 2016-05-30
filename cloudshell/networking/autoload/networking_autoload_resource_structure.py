@@ -127,8 +127,8 @@ class Chassis(GenericResource):
     NAME_TEMPLATE = 'Chassis{0}'
     RELATIVE_PATH_TEMPLATE = '{0}'
 
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
+    def __init__(self, element_id, **attributes_dict):
+        GenericResource.__init__(self, element_id, **attributes_dict)
         self.modules = []
         self.ports = []
         self.power_ports = []
@@ -152,8 +152,8 @@ class PowerPort(GenericResource):
     NAME_TEMPLATE = 'PP{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/PP{1}'
 
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
+    def __init__(self, element_id, **attributes_dict):
+        GenericResource.__init__(self, element_id, **attributes_dict)
 
 
 class Port(GenericResource):
@@ -162,8 +162,8 @@ class Port(GenericResource):
     NAME_TEMPLATE = '{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/{1}'
 
-    def __init__(self, element_id, name, *args, **kwargs):
-        GenericResource.__init__(self, element_id, name=name)
+    def __init__(self, element_id, name, **attributes_dict):
+        GenericResource.__init__(self, element_id, name=name, **attributes_dict)
 
 
 class PortChannel(GenericResource):
@@ -172,8 +172,8 @@ class PortChannel(GenericResource):
     NAME_TEMPLATE = '{0}'
     RELATIVE_PATH_TEMPLATE = 'PC{0}'
 
-    def __init__(self, element_id, name, *args, **kwargs):
-        GenericResource.__init__(self, element_id, name=name)
+    def __init__(self, element_id, name, **attributes_dict):
+        GenericResource.__init__(self, element_id, name=name, **attributes_dict)
 
 
 class Module(GenericResource):
@@ -182,8 +182,8 @@ class Module(GenericResource):
     NAME_TEMPLATE = 'Module{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/{1}'
 
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
+    def __init__(self, element_id, **attributes_dict):
+        GenericResource.__init__(self, element_id, **attributes_dict)
         self.sub_modules = []
         self.ports = []
 
@@ -206,8 +206,8 @@ class SubModule(GenericResource):
     NAME_TEMPLATE = 'SubModule{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/{1}'
 
-    def __init__(self, element_id, *args, **kwargs):
-        GenericResource.__init__(self, element_id)
+    def __init__(self, element_id, **attributes_dict):
+        GenericResource.__init__(self, element_id, **attributes_dict)
         self.ports = []
 
     def build_relative_path(self, parent_path):
