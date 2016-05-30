@@ -1,7 +1,7 @@
 from cloudshell.shell.core.driver_context import AutoLoadAttribute
 
 
-class GenericResourceAttributes(list):
+class AttributeContainer(list):
     _DEFAULT_VALUE = ''
     _DEFAULT_VALUES = {}
 
@@ -29,7 +29,7 @@ class GenericResourceAttributes(list):
             self.append_attribute(relative_path, attr_name, attr_value)
 
 
-class RootAttributes(GenericResourceAttributes):
+class RootAttributes(AttributeContainer):
     VENDOR = 'Vendor'
     SYSTEM_NAME = 'System Name'
     LOCATION = 'Location'
@@ -38,18 +38,24 @@ class RootAttributes(GenericResourceAttributes):
     MODEL = 'Model'
 
 
-class ChassisAttributes(GenericResourceAttributes):
+class ChassisAttributes(AttributeContainer):
     SERIAL_NUMBER = 'Serial Number'
     MODEL = 'Model'
 
 
-class ModuleAttributes(GenericResourceAttributes):
+class ModuleAttributes(AttributeContainer):
     SERIAL_NUMBER = 'Serial Number'
     MODEL = 'Model'
     VERSION = 'Version'
 
 
-class PortAttributes(GenericResourceAttributes):
+class SubModuleAttributes(AttributeContainer):
+    SERIAL_NUMBER = 'Serial Number'
+    MODEL = 'Model'
+    VERSION = 'Version'
+
+
+class PortAttributes(AttributeContainer):
     PROTOCOL_TYPE = 'Protocol Type'
     PORT_DESCRIPTION = 'Port Description'
     L2_PROTOCOL_TYPE = 'L2 Protocol Type'
@@ -70,7 +76,7 @@ class PortAttributes(GenericResourceAttributes):
         super(PortAttributes, self).__init__(relative_path, **kwargs)
 
 
-class PortChannelAttributes(GenericResourceAttributes):
+class PortChannelAttributes(AttributeContainer):
     PROTOCOL_TYPE = 'Protocol Type'
     PORT_DESCRIPTION = 'Port Description'
     ASSOCIATED_PORTS = 'Associated Ports'
@@ -82,7 +88,7 @@ class PortChannelAttributes(GenericResourceAttributes):
         super(PortChannelAttributes, self).__init__(relative_path, **kwargs)
 
 
-class PowerPortAttributes(GenericResourceAttributes):
+class PowerPortAttributes(AttributeContainer):
     SERIAL_NUMBER = 'Serial Number'
     MODEL = 'Model'
     VERSION = 'Version'
