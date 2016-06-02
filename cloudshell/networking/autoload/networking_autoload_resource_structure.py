@@ -34,14 +34,13 @@ class GenericResource(AutoLoadResource):
         if unique_id is not None and unique_id != '':
             self.unique_identifier = unique_id
 
-        if attributes_dict is not None and len(attributes_dict) > 0:
-            self.attributes = self.ATTRIBUTE_CONTAINER(**attributes_dict)
+        if attributes_dict is not None:
+            self.attributes = self.ATTRIBUTE_CONTAINER(relative_path, **attributes_dict)
         else:
             self.attributes = []
 
     def build_attributes(self, attributes_dict):
-        if self.attributes is None or len(self.attributes) == 0:
-            self.attributes = self.ATTRIBUTE_CONTAINER(self.relative_address, **attributes_dict)
+        self.attributes = self.ATTRIBUTE_CONTAINER(self.relative_address, **attributes_dict)
 
     def build_relative_path(self, parent_path):
         if self.RELATIVE_PATH_TEMPLATE is None:

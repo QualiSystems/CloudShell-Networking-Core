@@ -5,9 +5,9 @@ class AttributeContainer(list):
     _DEFAULT_VALUE = ''
     _DEFAULT_VALUES = {}
 
-    def __init__(self, relative_path=None, **kwargs):
+    def __init__(self, relative_path=None, **attributes_dict):
         self._default_values = {}
-        self.handle_attributes_dict(relative_path, kwargs)
+        self.handle_attributes_dict(relative_path, attributes_dict)
 
     def append_attribute(self, relative_path, attribute_name, attribute_param):
         if callable(attribute_param):
