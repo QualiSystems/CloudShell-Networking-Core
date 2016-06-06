@@ -1,7 +1,6 @@
-
-from abc import abstractmethod
 import traceback
 
+from abc import abstractmethod
 from cloudshell.core.action_result import ActionResult
 from cloudshell.core.driver_response import DriverResponse
 from cloudshell.core.driver_response_root import DriverResponseRoot
@@ -16,9 +15,13 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
                                                                  ('connectionParams', 'mode'),
                                                                  ('actionTarget', 'fullAddress')]
 
-    def __init__(self, cli_service, logger):
-        self._logger = logger
-        self._cli_service = cli_service
+    def __init__(self):
+        pass
+
+    @property
+    @abstractmethod
+    def logger(self):
+        pass
 
     def apply_connectivity_changes(self, request):
         """Handle apply connectivity changes request json, trigger add or remove vlan methods,
@@ -42,7 +45,7 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
         driver_response_root = DriverResponseRoot()
 
         for action in holder.driverRequest.actions:
-            self._logger.info('Action: ', action.__dict__)
+            self.logger.info('Action: ', action.__dict__)
             self._validate_request_action(action)
             action_result = ActionResult()
             action_result.type = action.type
@@ -67,7 +70,7 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
                                                               qnq,
                                                               ctag)
                 except Exception as e:
-                    self._logger.error('Add vlan failed: {0}'.format(traceback.format_exc()))
+                    self.logger.error('Add vlan failed: {0}'.format(traceback.format_exc()))
                     action_result.errorMessage = ', '.join(e.args)
                     action_result.success = False
             elif action.type == 'removeVlan':
@@ -76,7 +79,7 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
                                                                  action.actionTarget.fullAddress,
                                                                  action.connectionParams.mode.lower())
                 except Exception as e:
-                    self._logger.error('Remove vlan failed: {0}'.format(traceback.format_exc()))
+                    self.logger.error('Remove vlan failed: {0}'.format(traceback.format_exc()))
                     action_result.errorMessage = ', '.join(e.args)
                     action_result.success = False
             else:
