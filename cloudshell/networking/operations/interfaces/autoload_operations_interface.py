@@ -2,7 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class AutoloadOperationsInterface:
+class AutoloadOperationsInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod

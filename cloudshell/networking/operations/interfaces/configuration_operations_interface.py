@@ -2,13 +2,13 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class ConfigurationOperationsInterface:
+class ConfigurationOperationsInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def save_configuration(self, source_file, config_type, restore_method='override', vrf=None):
+    def save_configuration(self, destination_host, source_filename, vrf=None):
         pass
 
     @abstractmethod
-    def restore_configuration(self, destination_host, source_filename, vrf=None):
+    def restore_configuration(self, source_file, config_type, restore_method='override', vrf=None):
         pass
