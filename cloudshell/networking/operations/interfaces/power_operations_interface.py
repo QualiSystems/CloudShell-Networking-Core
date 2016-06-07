@@ -2,7 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class PowerOperationsInterface:
+class PowerOperationsInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
