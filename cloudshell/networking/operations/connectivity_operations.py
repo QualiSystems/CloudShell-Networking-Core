@@ -71,7 +71,7 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
                                                               ctag)
                 except Exception as e:
                     self.logger.error('Add vlan failed: {0}'.format(traceback.format_exc()))
-                    action_result.errorMessage = ', '.join(e.args)
+                    action_result.errorMessage = ', '.join(map(str, e.args))
                     action_result.success = False
             elif action.type == 'removeVlan':
                 try:
@@ -80,7 +80,7 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
                                                                  action.connectionParams.mode.lower())
                 except Exception as e:
                     self.logger.error('Remove vlan failed: {0}'.format(traceback.format_exc()))
-                    action_result.errorMessage = ', '.join(e.args)
+                    action_result.errorMessage = ', '.join(map(str, e.args))
                     action_result.success = False
             else:
                 continue
