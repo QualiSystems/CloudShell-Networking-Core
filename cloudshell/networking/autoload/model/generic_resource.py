@@ -1,5 +1,5 @@
 from cloudshell.shell.core.driver_context import AutoLoadResource
-from cloudshell.networking.autoload.networking_autoload_resource_attributes import AttributeContainer
+from cloudshell.networking.autoload.model.attribute_container import AttributeContainer
 
 
 class GenericResource(AutoLoadResource):
