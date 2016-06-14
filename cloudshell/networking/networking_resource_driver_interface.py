@@ -7,11 +7,7 @@ class NetworkingResourceDriverInterface:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def add_vlan(self, context, port, VLAN_Ranges, VLAN_Mode, additional_info='', qnq='', ctag=''):
-        pass
-
-    @abstractmethod
-    def remove_vlan(self, context, port, VLAN_Ranges, VLAN_Mode, additional_info='', qnq='', ctag=''):
+    def ApplyConnectivityChanges(self, context, request):
         pass
 
     @abstractmethod
@@ -27,7 +23,7 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def restore(self, context, path, restore_method):
+    def restore(self, context, path, config_type, restore_method):
         pass
 
     @abstractmethod
@@ -35,13 +31,9 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def load_firmware(self, context, remote_host, file_path):
+    def update_firmware(self, context, remote_host, file_path):
         pass
 
     @abstractmethod
-    def shutdown(self):
-        pass
-
-    @abstractmethod
-    def apply_connectivity_changes(self, context, json):
+    def shutdown(self, context):
         pass
