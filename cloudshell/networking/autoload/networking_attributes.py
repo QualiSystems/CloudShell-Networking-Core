@@ -45,6 +45,7 @@ class PortAttributes(AttributeContainer):
         self._DEFAULT_VALUES[self.L2_PROTOCOL_TYPE] = 'ethernet'
         self._DEFAULT_VALUES[self.MTU] = 0
         self._DEFAULT_VALUES[self.BANDWIDTH] = 0
+        self._DEFAULT_VALUES[self.DUPLEX] = 'Full'
         super(PortAttributes, self).__init__(relative_path, **kwargs)
 
 

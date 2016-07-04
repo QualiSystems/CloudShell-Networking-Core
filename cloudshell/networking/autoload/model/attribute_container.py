@@ -22,8 +22,11 @@ class AttributeContainer(list):
         return [getattr(self, attr) for attr in dir(self) if attr.isupper() and not attr.startswith('_')]
 
     def handle_attributes_dict(self, relative_path, attr_dict):
-        final_dict = dict((attr, self._DEFAULT_VALUE) for attr in self.get_attributes_list())
-        final_dict.update(self._DEFAULT_VALUES)
-        final_dict.update(attr_dict)
-        for attr_name, attr_value in final_dict.iteritems():
-            self.append_attribute(relative_path, attr_name, attr_value)
+        for attr in self.get_attributes_list():
+            if attr in attr_dict and attr_dict[attr]:
+                attr_value = attr_dict[attr]
+            elif attr in self._DEFAULT_VALUES:
+                attr_value = self._DEFAULT_VALUES[attr]
+            else:
+                attr_value = self._DEFAULT_VALUE
+            self.append_attribute(relative_path, attr, attr_value)
