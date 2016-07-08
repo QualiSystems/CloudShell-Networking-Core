@@ -5,6 +5,7 @@ import socket
 import struct
 import math
 
+
 def normalizePath(path):
     """
     :param path:
@@ -17,6 +18,7 @@ def normalizePath(path):
 
 ip2int = lambda ipstr: struct.unpack('!I', socket.inet_aton(ipstr))[0]
 int2ip = lambda n: socket.inet_ntoa(struct.pack('!I', n))
+
 
 def isInteger(s):
     try:
@@ -37,65 +39,60 @@ def isInteger(s):
 
 def normalizeStr(tmpStr):
     tmpStr = str(tmpStr)
-    tmpStr = tmpStr.replace(' ', '')
+
+    tmpStr = re.sub(r"\s|N/A|Future", "", tmpStr)
     tmpStr = tmpStr.replace(',', '.')
-    tmpStr = tmpStr.replace('N/A', '')
-    tmpStr = tmpStr.replace('Future', '')
-    tmpStr = tmpStr.replace('', '')
 
     return tmpStr
 
+
 def getNewIP(ipaddress, wMask):
-    '''Ip calculator to generate masked Ip address from received params
+    """Ip calculator to generate masked Ip address from received params
 
     :param ipaddress: ip address to mask
     :param wMask: wild card mask
     :return:
-    '''
+    """
     ip_octets = ipaddress.split('.')
     mask_octets = wMask.split('.')
     new_ip = []
     for i in range(len(ip_octets)):
         new_ip.append(str(int(ip_octets[i]) + int(mask_octets[i])))
 
-    return '.' . join(new_ip)
+    return '.'.join(new_ip)
+
 
 def validateIP(str):
     """Validate if provided string matches IPv4 with 4 decimal parts
     """
-
-    octets = str.strip('\"\r').split('.')
-    if len(octets) != 4:
+    try:
+        if len(str.strip('\"\r').split('.')) != 4:
+            return False
+        socket.inet_aton(str)
+        return True
+    except:
         return False
 
-    for x in octets:
-        if not x.isdigit():
-            return False
-
-    for octet in octets:
-        i = int(octet)
-        if i < 0 or i > 255:
-            return False
-    return True
 
 def validateVlanNumber(number):
+    """ Validate VLAN number. Should be from 1 to 4000 """
     try:
-        if int(number) > 4000 or int(number) < 1:
+        if not (1 <= int(number) <= 4000):
             return False
     except ValueError:
         return False
     return True
 
+
 def validateVlanRange(vlan_range):
+    result = True
     for vlan in vlan_range.split(','):
-        if '-' in vlan:
-            for vlan_range_border in vlan.split('-'):
-                result = validateVlanNumber(vlan_range_border)
-        else:
-            result = validateVlanNumber(vlan)
+        for vlan_range_border in vlan.split('-'):
+            result = validateVlanNumber(vlan_range_border)
         if not result:
             return False
     return True
+
 
 def validateSpanningTreeType(data):
     spanningTreeTypes = ['bridge', 'domain', 'lc-issu', 'loopguard', 'mode', 'mst',
@@ -103,6 +100,7 @@ def validateSpanningTreeType(data):
     if data in spanningTreeTypes:
         return True
     return False
+
 
 def verifyIpInRange(ip_address, start_addr, end_addr):
     """Validate if provided IP address matches provided network range
@@ -115,7 +113,7 @@ def verifyIpInRange(ip_address, start_addr, end_addr):
     ip_list = map(int, ip_address.split('.'))
 
     for i in range(len(ip_list)):
-        if (ip_list[i] < start_list[i]) or (ip_list[i] > end_list[i]):
+        if not (start_list[i] <= ip_list[i] <= end_list[i]):
             return False
 
     return True
@@ -124,7 +122,8 @@ def verifyIpInRange(ip_address, start_addr, end_addr):
 def validateMAC(str):
     """Validate if provided string matches MAC address pattern
     """
-    return re.match ('^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$', str.upper())
+    return re.match(r"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$", str, re.IGNORECASE)
+
 
 def getBroadCastAddress(ip, mask):
     """Calculate broadcast IP address for provided IP and subnet
@@ -133,6 +132,7 @@ def getBroadCastAddress(ip, mask):
     #network = ipcalc.Network(ip, mask)
     #return str(network.broadcast())
 
+
 def getIpInfo(ipStr):
     """Get IANA allocation information for the current IP address.
     """
@@ -140,11 +140,13 @@ def getIpInfo(ipStr):
     #ip = ipcalc.IP(ipStr)
     #return ip.info()
 
+
 def getSubnetCidr(ip, mask):
     """Get subnet in CIDR format, ex: 255.255.255.0 - 24
     """
     #fixme need lib
     #return ipcalc.Network('{}/{}'.format(ip, mask)).subnet()
+
 
 def getNetworkAddress(ip, mask):
     """Network slice calculations.
@@ -163,10 +165,7 @@ def getNetworkAddress(ip, mask):
 def getMatrixFromString(data_str):
     lines = data_str.split('\n')
 
-    lines = filter(
-        lambda value:
-        value != '',
-        lines)
+    lines = filter(lambda value: value != '', lines)
 
     if len(lines) <= 1:
         return {}
@@ -174,7 +173,7 @@ def getMatrixFromString(data_str):
     del lines[-1]
     del lines[0]
 
-    pattern_def_line = re.compile('-{2,}')
+    pattern_def_line = re.compile(r"-{2,}")
 
     columns_count = 0
     column_lens = []
@@ -197,7 +196,7 @@ def getMatrixFromString(data_str):
         index = 0
         position = 0
         for column_len in column_lens:
-            column_line = line[position : position + column_len]
+            column_line = line[position: position + column_len]
 
             column_line_list = pattern_not_space.findall(column_line)
             column_line = ''
@@ -243,12 +242,20 @@ def shieldString(data_str):
 
     return new_data_str
 
+
 def normalize_buffer(input_buffer):
-    """
-    Method for clear color fro input_buffer and special characters
+    """Clear color from input_buffer and special characters
+
+    :param str input_buffer: input buffer string from device
+    :return: str
     """
 
-    color_pattern = re.compile('\[[0-9]+;{0,1}[0-9]+m|\[[0-9]+m|\b|' + chr(27))            # 27 - ESC character
+    # \033[1;32;40m
+    # \033[ - Escape code
+    # 1     - style
+    # 32    - text color
+    # 40    - Background colour
+    color_pattern = re.compile(r'\[(\d+;){0,2}?\d+m|\b|' + chr(27))  # 27 - ESC character
 
     result_buffer = ''
 
@@ -262,7 +269,10 @@ def normalize_buffer(input_buffer):
 
     result_buffer += input_buffer[current_index:]
 
+    result_buffer = result_buffer.replace('\r\n', '\n')
+
     return re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', result_buffer)
+
 
 def getDictionaryData(source_dictionary, forbidden_keys):
     destination_dictionary = {}
@@ -273,6 +283,7 @@ def getDictionaryData(source_dictionary, forbidden_keys):
         destination_dictionary[key] = value
 
     return destination_dictionary
+
 
 def getBitSize(bandwidth):
     bandwidth = bandwidth.lower()
