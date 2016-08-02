@@ -10,8 +10,8 @@ class GenericResource(AutoLoadResource):
 
     def __init__(self, element_id, name=None, model=None, relative_path=None, unique_id=None,
                  **attributes_dict):
-
-        self.element_id = element_id
+        if element_id:
+            self.element_id = int(element_id)
         if name is not None and name != '':
             self.name = name
         elif self.NAME_TEMPLATE is not None:
