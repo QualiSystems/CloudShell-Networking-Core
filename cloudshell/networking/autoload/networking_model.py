@@ -2,6 +2,7 @@ from cloudshell.networking.autoload.model.generic_resource import GenericResourc
 from cloudshell.networking.autoload.networking_attributes import ChassisAttributes, \
     PowerPortAttributes, PortAttributes, ModuleAttributes, SubModuleAttributes, PortChannelAttributes, \
     RootAttributes
+from cloudshell.shell.core.driver_context import AutoLoadDetails
 
 
 class RootElement(GenericResource):
@@ -17,7 +18,8 @@ class RootElement(GenericResource):
 
     def build_relative_path(self, parent_path=None):
         GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_child_resources(self.relative_address, self.chassis, self.port_channels)
+        self._validate_child_ids(self.chassis, self.port_channels)
+        self._build_relative_path_for_child_resources(self.chassis, self.port_channels)
 
     def get_resources(self):
         return self._get_resources_for_child_resources(self.chassis, self.port_channels)
@@ -25,6 +27,10 @@ class RootElement(GenericResource):
     def get_attributes(self):
         return GenericResource.get_attributes(self) + self._get_attributes_for_child_resources(self.chassis,
                                                                                                self.port_channels)
+
+    def get_autoload_details(self):
+        self.build_relative_path()
+        return AutoLoadDetails(self.get_resources(), self.get_attributes())
 
 
 class Chassis(GenericResource):
@@ -41,7 +47,8 @@ class Chassis(GenericResource):
 
     def build_relative_path(self, parent_path):
         GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_child_resources(self.relative_address, self.modules, self.ports, self.power_ports)
+        self._validate_child_ids(self.modules, self.ports, self.power_ports)
+        self._build_relative_path_for_child_resources(self.modules, self.ports, self.power_ports)
 
     def get_attributes(self, *args):
         return GenericResource.get_attributes(self) + self._get_attributes_for_child_resources(self.modules, self.ports,
@@ -95,7 +102,8 @@ class Module(GenericResource):
 
     def build_relative_path(self, parent_path):
         GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_child_resources(self.relative_address, self.sub_modules, self.ports)
+        self._validate_child_ids(self.sub_modules, self.ports)
+        self._build_relative_path_for_child_resources(self.sub_modules, self.ports)
 
     def get_resources(self):
         return GenericResource.get_resources(self) + self._get_resources_for_child_resources(self.sub_modules,
@@ -118,7 +126,8 @@ class SubModule(GenericResource):
 
     def build_relative_path(self, parent_path):
         GenericResource.build_relative_path(self, parent_path)
-        self._build_relative_path_for_child_resources(self.relative_address, self.ports)
+        self._validate_child_ids(self.ports)
+        self._build_relative_path_for_child_resources(self.ports)
 
     def get_resources(self):
         return GenericResource.get_resources(self) + self._get_resources_for_child_resources(self.ports)

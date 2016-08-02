@@ -32,10 +32,12 @@ class GenericResource(AutoLoadResource):
         if unique_id is not None and unique_id != '':
             self.unique_identifier = unique_id
 
-        if attributes_dict is not None:
+        if attributes_dict:
             self.attributes = self.ATTRIBUTE_CONTAINER(relative_path, **attributes_dict)
         else:
             self.attributes = []
+        self._zero_elements = []
+        self._elements_ids = []
 
     def build_attributes(self, attributes_dict):
         self.attributes = self.ATTRIBUTE_CONTAINER(self.relative_address, **attributes_dict)
@@ -50,14 +52,10 @@ class GenericResource(AutoLoadResource):
 
         self._set_relative_path_to_attributes()
 
-    def _build_relative_path_for_child_resources(self, parent_path, *child_resources):
-        for child_list in child_resources:
-            self._build_relative_path_for_resource_list(parent_path, child_list)
-
-    def _build_relative_path_for_resource_list(self, parent_path, child_resources):
-        if child_resources is not None and len(child_resources) > 0:
-            for resource in child_resources:
-                resource.build_relative_path(parent_path)
+    def _build_relative_path_for_child_resources(self, *child_resources):
+        if len(child_resources) > 0:
+            for resource in reduce(lambda x, y: x + y, child_resources):
+                resource.build_relative_path(self.relative_address)
 
     def _set_relative_path_to_attributes(self):
         for attribute in self.attributes:
@@ -66,30 +64,32 @@ class GenericResource(AutoLoadResource):
     def get_attributes(self):
         return self.attributes
 
-    def _get_attributes_for_child_resources(self, *child_resources):
+    @staticmethod
+    def _get_attributes_for_child_resources(*child_resources):
         attributes = []
         if len(child_resources) > 0:
-            for res_list in child_resources:
-                attributes += self._get_attributes_for_resource_list(res_list)
-        return attributes
-
-    def _get_attributes_for_resource_list(self, resource_list):
-        attributes = []
-        for resource in resource_list:
-            attributes += resource.get_attributes()
+            for resource in reduce(lambda x, y: x + y, child_resources):
+                attributes += resource.get_attributes()
         return attributes
 
     def get_resources(self):
         return [self]
 
-    def _get_resources_for_child_resources(self, *child_resources):
+    @staticmethod
+    def _get_resources_for_child_resources(*child_resources):
         resources = []
-        for resource_list in child_resources:
-            resources += self._get_resources_for_resource_list(resource_list)
-        return resources
+        if len(child_resources) > 0:
+            for resource in reduce(lambda x, y: x + y, child_resources):
+                resources += resource.get_resources()
+            return resources
 
-    def _get_resources_for_resource_list(self, resource_list):
-        resources = []
-        for resource in resource_list:
-            resources += resource.get_resources()
-        return resources
+    def _validate_child_ids(self, *child_resources):
+        for element in reduce(lambda x, y: x + y, child_resources):
+            if int(element.element_id) == 0 or int(element.element_id) in self._elements_ids:
+                self._zero_elements.append(element)
+            else:
+                self._elements_ids.append(int(element.element_id))
+
+        for element in self._zero_elements:
+            element.element_id = max(self._elements_ids) + 1
+            self._elements_ids.append(element.element_id)
