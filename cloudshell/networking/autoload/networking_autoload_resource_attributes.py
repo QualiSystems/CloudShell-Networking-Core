@@ -1,6 +1,6 @@
 from cloudshell.shell.core.driver_context import AutoLoadAttribute
 
-class GenericResourceAttribute:
+class GenericResourceAttribute(object):
     def get_autoload_resource_attributes(self):
         attributes_dict = self.__dict__.copy()
         return attributes_dict.values()
@@ -31,9 +31,8 @@ class NetworkingStandardModuleAttributes(GenericResourceAttribute):
 
 
 class NetworkingStandardPortAttributes(GenericResourceAttribute):
-    def __init__(self, relative_path, protocol_type='Transparent', description='', l2_protocol_type='ethernet', mac='',
+    def __init__(self, relative_path, description='', l2_protocol_type='ethernet', mac='',
                  mtu=0, bandwidth=0, adjacent='', ipv4_address='', ipv6_address='', duplex='', auto_negotiation=''):
-        self.protocol_type = AutoLoadAttribute(relative_path, 'Protocol Type', protocol_type)
         self.port_description = AutoLoadAttribute(relative_path, 'Port Description', description)
         self.l2_protocol_type = AutoLoadAttribute(relative_path, 'L2 Protocol Type', l2_protocol_type)
         self.mac = AutoLoadAttribute(relative_path, 'MAC Address', mac)
@@ -47,9 +46,8 @@ class NetworkingStandardPortAttributes(GenericResourceAttribute):
 
 
 class NetworkingStandardPortChannelAttributes(GenericResourceAttribute):
-    def __init__(self, relative_path, protocol_type='Transparent', description='', associated_ports='',
+    def __init__(self, relative_path, description='', associated_ports='',
                  ipv4_address='', ipv6_address=''):
-        self.protocol_type = AutoLoadAttribute(relative_path, 'Protocol Type', protocol_type)
         self.description = AutoLoadAttribute(relative_path, 'Port Description', description)
         self.associated_ports = AutoLoadAttribute(relative_path, 'Associated Ports', associated_ports)
         self.ipv4_address = AutoLoadAttribute(relative_path, 'IPv4 Address', ipv4_address)
