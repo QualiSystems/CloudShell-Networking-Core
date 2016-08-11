@@ -3,7 +3,7 @@ __author__ = 'CoYe'
 from abc import ABCMeta
 from abc import abstractmethod
 
-class NetworkingResourceDriverInterface:
+class NetworkingResourceDriverInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -31,7 +31,7 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def update_firmware(self, context, remote_host, file_path):
+    def load_firmware(self, context, remote_host, file_path):
         pass
 
     @abstractmethod
