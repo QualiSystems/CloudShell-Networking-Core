@@ -85,11 +85,14 @@ class GenericResource(AutoLoadResource):
 
     def _validate_child_ids(self, *child_resources):
         for element in reduce(lambda x, y: x + y, child_resources):
-            if int(element.element_id) == 0 or int(element.element_id) in self._elements_ids:
+            if int(element.element_id) == -1 or int(element.element_id) in self._elements_ids:
                 self._zero_elements.append(element)
             else:
                 self._elements_ids.append(int(element.element_id))
 
         for element in self._zero_elements:
-            element.element_id = max(self._elements_ids) + 1
+            if len(self._elements_ids) > 0:
+                element.element_id = max(self._elements_ids) + 1
+            else:
+                element.element_id = 0
             self._elements_ids.append(element.element_id)
