@@ -58,22 +58,6 @@ class StateOperations(StateOperationsInterface):
         self.api.SetResourceLiveStatus(self.resource_name, api_response, result)
         return result
 
-    def ping_resource(self):
-        ip_address = self._get_resource_attribute('Address')
-        if 'windows' in platform.system().lower():
-            output = os.popen("ping -n 5 {}".format(ip_address)).read()
-        else:
-            output = os.popen("ping -c 5 {}".format(ip_address)).read()
-        match_result = re.search('\d+%', output)
-        if match_result:
-            try:
-                packet_loss = int(match_result.group().replace('%', ''))
-                if packet_loss <= self.max_allowed_packet_loss:
-                    return True
-            except:
-                pass
-        return False
-
     def _get_resource_attribute(self, attribute_name):
         """Get resource attribute by provided attribute_name
 
