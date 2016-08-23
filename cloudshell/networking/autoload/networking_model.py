@@ -18,7 +18,8 @@ class RootElement(GenericResource):
 
     def build_relative_path(self, parent_path=None):
         GenericResource.build_relative_path(self, parent_path)
-        self._validate_child_ids(self.chassis, self.port_channels)
+        self._validate_child_ids(self.chassis)
+        self._validate_child_ids(self.port_channels)
         self._build_relative_path_for_child_resources(self.chassis, self.port_channels)
 
     def get_resources(self):
@@ -39,15 +40,16 @@ class Chassis(GenericResource):
     NAME_TEMPLATE = 'Chassis{0}'
     RELATIVE_PATH_TEMPLATE = '{0}'
 
-    def __init__(self, element_id, **attributes_dict):
-        GenericResource.__init__(self, element_id, **attributes_dict)
+    def __init__(self, element_id, **kwargs):
+        GenericResource.__init__(self, element_id, **kwargs)
         self.modules = []
         self.ports = []
         self.power_ports = []
 
     def build_relative_path(self, parent_path):
         GenericResource.build_relative_path(self, parent_path)
-        self._validate_child_ids(self.modules, self.ports, self.power_ports)
+        self._validate_child_ids(self.modules, self.ports)
+        self._validate_child_ids(self.power_ports)
         self._build_relative_path_for_child_resources(self.modules, self.ports, self.power_ports)
 
     def get_attributes(self, *args):
@@ -65,8 +67,8 @@ class PowerPort(GenericResource):
     NAME_TEMPLATE = 'PP{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/PP{1}'
 
-    def __init__(self, element_id, **attributes_dict):
-        GenericResource.__init__(self, element_id, **attributes_dict)
+    def __init__(self, element_id, **kwargs):
+        GenericResource.__init__(self, element_id, **kwargs)
 
 
 class Port(GenericResource):
@@ -75,8 +77,8 @@ class Port(GenericResource):
     NAME_TEMPLATE = '{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/{1}'
 
-    def __init__(self, element_id, name, **attributes_dict):
-        GenericResource.__init__(self, element_id, name=name, **attributes_dict)
+    def __init__(self, element_id, name, **kwargs):
+        GenericResource.__init__(self, element_id, name=name, **kwargs)
 
 
 class PortChannel(GenericResource):
@@ -85,8 +87,8 @@ class PortChannel(GenericResource):
     NAME_TEMPLATE = '{0}'
     RELATIVE_PATH_TEMPLATE = 'PC{0}'
 
-    def __init__(self, element_id, name, **attributes_dict):
-        GenericResource.__init__(self, element_id, name=name, **attributes_dict)
+    def __init__(self, element_id, name, **kwargs):
+        GenericResource.__init__(self, element_id, name=name, **kwargs)
 
 
 class Module(GenericResource):
@@ -95,8 +97,8 @@ class Module(GenericResource):
     NAME_TEMPLATE = 'Module{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/{1}'
 
-    def __init__(self, element_id, **attributes_dict):
-        GenericResource.__init__(self, element_id, **attributes_dict)
+    def __init__(self, element_id, **kwargs):
+        GenericResource.__init__(self, element_id, **kwargs)
         self.sub_modules = []
         self.ports = []
 
@@ -120,8 +122,8 @@ class SubModule(GenericResource):
     NAME_TEMPLATE = 'SubModule{0}'
     RELATIVE_PATH_TEMPLATE = '{0}/{1}'
 
-    def __init__(self, element_id, **attributes_dict):
-        GenericResource.__init__(self, element_id, **attributes_dict)
+    def __init__(self, element_id, **kwargs):
+        GenericResource.__init__(self, element_id, **kwargs)
         self.ports = []
 
     def build_relative_path(self, parent_path):
