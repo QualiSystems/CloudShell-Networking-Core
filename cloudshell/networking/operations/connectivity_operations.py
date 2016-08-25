@@ -4,7 +4,7 @@ from abc import abstractmethod
 from cloudshell.core.action_result import ActionResult
 from cloudshell.core.driver_response import DriverResponse
 from cloudshell.core.driver_response_root import DriverResponseRoot
-from cloudshell.networking.core.connectivity_request_helper import ConnectivityRequestDeserializer
+from cloudshell.networking.core.json_request_helper import JsonRequestDeserializer
 from cloudshell.networking.operations.interfaces.connectivity_operations_interface import \
     ConnectivityOperationsInterface
 import jsonpickle
@@ -35,7 +35,7 @@ class ConnectivityOperations(ConnectivityOperationsInterface):
         if request is None or request == '':
             raise Exception('ConnectivityOperations', 'request is None or empty')
 
-        holder = ConnectivityRequestDeserializer(jsonpickle.decode(request))
+        holder = JsonRequestDeserializer(jsonpickle.decode(request))
 
         if not holder or not hasattr(holder, 'driverRequest'):
             raise Exception('ConnectivityOperations', 'Deserialized request is None or empty')

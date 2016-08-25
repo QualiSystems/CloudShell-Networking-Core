@@ -38,39 +38,29 @@ class StateOperations(StateOperationsInterface):
         :rtype json
         """
 
-        result = ''
+        self.logger.info('Start health check on {} resource'.format(self.resource_name))
         success = False
         api_response = 'Online'
         try:
-           self.cli.send_command('')
-           success = True
+            self.cli.send_command('')
+            success = True
         except Exception:
-           pass
+            pass
 
         result = 'Health check on resource {}'.format(self.resource_name)
 
         if success:
-            result += ' passed;'
+            result += ' passed.'
         else:
             api_response = 'Error'
-            result += ' failed;'
-
-        self.api.SetResourceLiveStatus(self.resource_name, api_response, result)
-        return result
-
-    def _get_resource_attribute(self, attribute_name):
-        """Get resource attribute by provided attribute_name
-
-        :param resource_full_path: resource name or full name
-        :param attribute_name: name of the attribute
-        :return: attribute value
-        :rtype: string
-        """
+            result += ' failed.'
 
         try:
-            result = self.api.GetAttributeValue(self.resource_name, attribute_name).Value
+            self.api.SetResourceLiveStatus(self.resource_name, api_response, result)
         except Exception as e:
-            raise Exception(e.message)
+            self.logger.error('Cannot update {} resource status on portal'.format(self.resource_name))
+
+        self.logger.info('Health check on {} resource completed'.format(self.resource_name))
         return result
 
     @abstractmethod

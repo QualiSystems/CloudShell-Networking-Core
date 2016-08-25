@@ -23,7 +23,7 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def restore(self, context, path, configuration_type, restore_method='override', vrf_management_name=None):
+    def restore(self, context, path, restore_method='override', configuration_type='running', vrf_management_name=None):
         pass
 
     @abstractmethod
