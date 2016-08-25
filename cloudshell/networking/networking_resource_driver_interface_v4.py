@@ -43,7 +43,7 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def load_firmware(self, context, path, vrf_management_name):
+    def load_firmware(self, context, path, vrf_management_name=None):
         pass
 
     @abstractmethod
