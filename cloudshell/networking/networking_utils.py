@@ -1,9 +1,13 @@
 __author__ = 'oei'
 
+import os
 import re
 import socket
 import struct
 import math
+
+from urlparse import urlsplit
+
 
 def normalizePath(path):
     """
@@ -17,6 +21,7 @@ def normalizePath(path):
 
 ip2int = lambda ipstr: struct.unpack('!I', socket.inet_aton(ipstr))[0]
 int2ip = lambda n: socket.inet_ntoa(struct.pack('!I', n))
+
 
 def isInteger(s):
     try:
@@ -45,6 +50,7 @@ def normalizeStr(tmpStr):
 
     return tmpStr
 
+
 def getNewIP(ipaddress, wMask):
     '''Ip calculator to generate masked Ip address from received params
 
@@ -59,6 +65,7 @@ def getNewIP(ipaddress, wMask):
         new_ip.append(str(int(ip_octets[i]) + int(mask_octets[i])))
 
     return '.' . join(new_ip)
+
 
 def validateIP(str):
     """Validate if provided string matches IPv4 with 4 decimal parts
@@ -78,6 +85,7 @@ def validateIP(str):
             return False
     return True
 
+
 def validateVlanNumber(number):
     try:
         if int(number) > 4000 or int(number) < 1:
@@ -85,6 +93,7 @@ def validateVlanNumber(number):
     except ValueError:
         return False
     return True
+
 
 def validateVlanRange(vlan_range):
     for vlan in vlan_range.split(','):
@@ -97,12 +106,14 @@ def validateVlanRange(vlan_range):
             return False
     return True
 
+
 def validateSpanningTreeType(data):
     spanningTreeTypes = ['bridge', 'domain', 'lc-issu', 'loopguard', 'mode', 'mst',
                          'pathcost', 'port', 'pseudo-information', 'vlan']
     if data in spanningTreeTypes:
         return True
     return False
+
 
 def verifyIpInRange(ip_address, start_addr, end_addr):
     """Validate if provided IP address matches provided network range
@@ -124,7 +135,8 @@ def verifyIpInRange(ip_address, start_addr, end_addr):
 def validateMAC(str):
     """Validate if provided string matches MAC address pattern
     """
-    return re.match ('^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$', str.upper())
+    return re.match('^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$', str.upper())
+
 
 def getBroadCastAddress(ip, mask):
     """Calculate broadcast IP address for provided IP and subnet
@@ -133,6 +145,7 @@ def getBroadCastAddress(ip, mask):
     #network = ipcalc.Network(ip, mask)
     #return str(network.broadcast())
 
+
 def getIpInfo(ipStr):
     """Get IANA allocation information for the current IP address.
     """
@@ -140,11 +153,13 @@ def getIpInfo(ipStr):
     #ip = ipcalc.IP(ipStr)
     #return ip.info()
 
+
 def getSubnetCidr(ip, mask):
     """Get subnet in CIDR format, ex: 255.255.255.0 - 24
     """
     #fixme need lib
     #return ipcalc.Network('{}/{}'.format(ip, mask)).subnet()
+
 
 def getNetworkAddress(ip, mask):
     """Network slice calculations.
@@ -243,6 +258,7 @@ def shieldString(data_str):
 
     return new_data_str
 
+
 def normalize_buffer(input_buffer):
     """
     Method for clear color fro input_buffer and special characters
@@ -264,6 +280,7 @@ def normalize_buffer(input_buffer):
 
     return re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', result_buffer)
 
+
 def getDictionaryData(source_dictionary, forbidden_keys):
     destination_dictionary = {}
     for key, value in source_dictionary.iteritems():
@@ -273,6 +290,7 @@ def getDictionaryData(source_dictionary, forbidden_keys):
         destination_dictionary[key] = value
 
     return destination_dictionary
+
 
 def getBitSize(bandwidth):
     bandwidth = bandwidth.lower()
@@ -287,3 +305,33 @@ def getBitSize(bandwidth):
     bits = int(re.search('\d+', bandwidth).group()) * multiplier
 
     return math.log10(bits)
+
+
+class UrlParser(object):
+    SCHEME = 'scheme'
+    NETLOC = 'netloc'
+    PATH = 'path'
+    FILENAME = 'filename'
+    QUERY = 'query'
+    FRAGMENT = 'fragment'
+    USERNAME = 'username'
+    PASSWORD = 'password'
+    HOSTNAME = 'hostname'
+    PORT = 'port'
+
+    @staticmethod
+    def parse_url(url):
+        parsed = urlsplit(url)
+        result = {}
+        for attr in dir(UrlParser):
+            if attr.isupper() and not attr.startswith('_'):
+                attr_value = getattr(UrlParser, attr)
+                if hasattr(parsed, attr_value):
+                    value = getattr(parsed, attr_value)
+                    if attr_value == UrlParser.PATH:
+                        path, filename = os.path.split(value)
+                        result[UrlParser.PATH] = path
+                        result[UrlParser.FILENAME] = filename
+                    else:
+                        result[attr_value] = value
+        return result
