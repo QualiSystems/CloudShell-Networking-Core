@@ -9,8 +9,8 @@ from cloudshell.networking.networking_utils import UrlParser
 from cloudshell.networking.operations.interfaces.configuration_operations_interface import \
     ConfigurationOperationsInterface
 from cloudshell.shell.core.context_utils import get_attribute_by_name
-from cloudshell.shell.core.interfaces.save_restore import OrchestrationSaveResult, OrchestrationSavedArtifactInfo, \
-    OrchestrationSavedArtifact, OrchestrationRestoreRules
+# from cloudshell.shell.core.interfaces.save_restore import OrchestrationSaveResult, OrchestrationSavedArtifactInfo, \
+#     OrchestrationSavedArtifact, OrchestrationRestoreRules
 
 
 def _get_snapshot_time_stamp():
@@ -196,8 +196,8 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         if not hasattr(custom_params, 'custom_params'):
             raise Exception('ConfigurationOperations', 'custom_params input is empty')
 
-    def get_restore_rules(self):
-        return OrchestrationRestoreRules(True)
+    # def get_restore_rules(self):
+    #     return OrchestrationRestoreRules(True)
 
     def _get_resource_attribute(self, resource_name, attribute_name):
         """Get resource attribute by provided attribute_name
