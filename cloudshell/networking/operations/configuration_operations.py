@@ -26,7 +26,7 @@ def set_command_result(result, unpicklable=False):
     """
 
     json = jsonpickle.encode(result, unpicklable=unpicklable)
-    result_for_output = str(json)  # .replace('[true]', 'true')
+    result_for_output = str(json)
     return result_for_output
 
 
@@ -106,16 +106,15 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         return set_command_result(save_response)
 
     def orchestration_restore(self, saved_artifact_info, custom_params=None):
-        """Handle apply connectivity changes request json, trigger add or remove vlan methods,
-        get responce from them and create json response
+        """Orchestration restore
 
-        :param request: json with all required action to configure or remove vlans from certain port
+        :param saved_artifact_info: json with all required data to restore configuration on the device
+        :param custom_params: custom parameters
         :return Serialized DriverResponseRoot to json
         :rtype json
         """
 
-        restore_params = {}
-        configuration_type = 'running'
+        restore_params = {'configuration_type': 'running'}
 
         if saved_artifact_info is None or saved_artifact_info == '':
             raise Exception('ConfigurationOperations', 'saved_artifact_info is None or empty')
@@ -157,7 +156,7 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
             if UrlParser.FILENAME in url and url[UrlParser.FILENAME] and 'startup' in url[UrlParser.FILENAME]:
                 restore_params['configuration_type'] = 'startup'
             restore_params['vrf_management_name'] = self._get_resource_attribute(self.resource_name,
-                                                                                     'VRF Management Name') or ''
+                                                                                 'VRF Manaagement Name') or ''
         try:
             restore_params['path'] = UrlParser.build_url(**url)
         except Exception as e:

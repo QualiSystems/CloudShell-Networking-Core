@@ -19,7 +19,7 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def save(self, context, folder_path, configuration_type, vrf_management_name=None):
+    def save(self, context, configuration_type, folder_path, vrf_management_name=None):
         pass
 
     @abstractmethod
