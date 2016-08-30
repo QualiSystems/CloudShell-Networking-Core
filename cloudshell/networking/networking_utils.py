@@ -352,9 +352,11 @@ class UrlParser(object):
         url_result[UrlParser.SCHEME] = kwargs[UrlParser.SCHEME]
 
         if UrlParser.NETLOC in kwargs and kwargs[UrlParser.NETLOC]:
-            if UrlParser.USERNAME in kwargs and kwargs[UrlParser.USERNAME] in kwargs[UrlParser.NETLOC]:
+            if UrlParser.USERNAME in kwargs \
+                    and kwargs[UrlParser.USERNAME] \
+                    and kwargs[UrlParser.USERNAME] in kwargs[UrlParser.NETLOC]:
                 url_result[UrlParser.NETLOC] = kwargs[UrlParser.NETLOC]
-        else:
+        if UrlParser.NETLOC not in url_result:
             url_result[UrlParser.NETLOC] = kwargs[UrlParser.HOSTNAME]
             if UrlParser.PORT in kwargs and kwargs[UrlParser.PORT]:
                 url_result[UrlParser.NETLOC] += str(kwargs[UrlParser.PORT])
