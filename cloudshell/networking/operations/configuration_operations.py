@@ -68,6 +68,7 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
 
         save_params = dict()
 
+        url = None
         artifact_type = ''
 
         if hasattr(params, 'custom_params'):
@@ -92,7 +93,7 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
             if hasattr(params.custom_params, 'vrf_management_name'):
                 save_params['vrf_management_name'] = params.custom_params.vrf_management_name
 
-        self.logger.info('Action: ', params.__dict__)
+        self.logger.info('Start saving configuration')
 
         identifier_template = '//{}/{}/'
         if 'filesystem' in artifact_type:

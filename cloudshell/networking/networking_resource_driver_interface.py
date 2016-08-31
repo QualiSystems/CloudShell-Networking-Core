@@ -53,4 +53,3 @@ class NetworkingResourceDriverInterface:
     @abstractmethod
     def shutdown(self, context):
         pass
-
