@@ -78,7 +78,15 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
             if hasattr(params.custom_params, 'folder_path'):
                 save_params['folder_path'] = params.custom_params.folder_path
             else:
-                save_params['folder_path'] = get_attribute_by_name('Backup Location')
+                host = get_attribute_by_name('Backup Location')
+                if ':' not in host:
+                    scheme = get_attribute_by_name('Backup Type')
+                    if not scheme:
+                        raise Exception('ConfigurationOperations', "Backup Type is wrong or empty")
+                    scheme = re.sub(':|/+', '', scheme)
+                    host = re.sub('^/+', '', host)
+                    host = '{}://{}'.format(scheme, host)
+                save_params['folder_path'] = host
                 if not save_params['folder_path']:
                     raise Exception('ConfigurationOperations', 'Backup Location and folder path attribute is empty')
 
