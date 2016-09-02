@@ -12,3 +12,6 @@ class StateOperationsInterface(object):
     @abstractmethod
     def shutdown(self):
         pass
+
+    def reload(self):
+        pass
