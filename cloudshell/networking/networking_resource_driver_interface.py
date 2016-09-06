@@ -19,6 +19,14 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
+    def send_custom_command(self, context, custom_command):
+        pass
+
+    @abstractmethod
+    def send_custom_config_command(self, context, custom_command):
+        pass
+
+    @abstractmethod
     def save(self, context, folder_path, configuration_type, vrf_management_name=None):
         pass
 

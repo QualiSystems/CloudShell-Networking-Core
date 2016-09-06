@@ -2,13 +2,13 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class SendCommandInterface(object):
+class RunCommandInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def send_command(self, command):
+    def run_custom_command(self, command):
         pass
 
     @abstractmethod
-    def send_config_command(self, command):
+    def run_custom_config_command(self, command):
         pass
