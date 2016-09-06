@@ -11,11 +11,11 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def send_custom_command(self, context, custom_command):
+    def run_custom_command(self, context, custom_command):
         pass
 
     @abstractmethod
-    def send_custom_config_command(self, context, custom_command):
+    def run_custom_config_command(self, context, custom_command):
         pass
 
     @abstractmethod
