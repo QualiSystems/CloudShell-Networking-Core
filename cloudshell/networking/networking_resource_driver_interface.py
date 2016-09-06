@@ -23,7 +23,7 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def restore(self, context, path, configuration_type='running', restore_method='override', vrf_management_name=None):
+    def restore(self, context, path, configuration_type, restore_method, vrf_management_name=None):
         pass
 
     @abstractmethod
@@ -39,7 +39,7 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def orchestration_save(self, context, mode="shallow", custom_params=None):
+    def orchestration_save(self, context, mode, custom_params=None):
         pass
 
     @abstractmethod
