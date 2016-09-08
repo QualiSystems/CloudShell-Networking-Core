@@ -144,7 +144,7 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         saved_config = saved_artifact_info.saved_artifacts_info
         params = None
         if custom_params:
-            params = jsonpickle.decode(custom_params)
+            params = JsonRequestDeserializer(jsonpickle.decode(custom_params))
             self._validate_custom_params(params)
 
         self._validate_artifact_info(saved_config)
