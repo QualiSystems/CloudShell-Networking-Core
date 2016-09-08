@@ -58,58 +58,48 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         :rtype json
         """
 
-        if custom_params is None or custom_params == '':
-            raise Exception('ConfigurationOperations', 'request is None or empty')
-
-        params = JsonRequestDeserializer(jsonpickle.decode(custom_params))
+        params = None
+        if custom_params:
+            params = jsonpickle.decode(custom_params)
 
         if not params:
             raise Exception('ConfigurationOperations', 'Deserialized custom_params is None or empty')
 
         save_params = dict()
 
-        url = None
-        artifact_type = ''
+        if params and 'custom_params' in params and params['custom_params']:
+            save_params.update(params['custom_params'])
 
-        if hasattr(params, 'custom_params'):
-            if hasattr(params.custom_params, 'configuration_type'):
-                save_params['configuration_type'] = params.custom_params.configuration_type
+        if 'folder_path' not in save_params:
+            host = get_attribute_by_name('Backup Location')
+            if ':' not in host:
+                scheme = get_attribute_by_name('Backup Type')
+                if not scheme:
+                    raise Exception('ConfigurationOperations', "Backup Type is wrong or empty")
+                scheme = re.sub(':|/+', '', scheme)
+                host = re.sub('^/+', '', host)
+                host = '{}://{}'.format(scheme, host)
+            save_params['folder_path'] = host
+            if not save_params['folder_path']:
+                raise Exception('ConfigurationOperations', 'Backup Location and folder path attribute is empty')
 
-            if hasattr(params.custom_params, 'folder_path'):
-                save_params['folder_path'] = params.custom_params.folder_path
-            else:
-                host = get_attribute_by_name('Backup Location')
-                if ':' not in host:
-                    scheme = get_attribute_by_name('Backup Type')
-                    if not scheme:
-                        raise Exception('ConfigurationOperations', "Backup Type is wrong or empty")
-                    scheme = re.sub(':|/+', '', scheme)
-                    host = re.sub('^/+', '', host)
-                    host = '{}://{}'.format(scheme, host)
-                save_params['folder_path'] = host
-                if not save_params['folder_path']:
-                    raise Exception('ConfigurationOperations', 'Backup Location and folder path attribute is empty')
-
-            if not save_params['folder_path'].endswith('/'):
-                save_params['folder_path'] += '/'
-            url = UrlParser.parse_url(save_params['folder_path'])
-            if UrlParser.SCHEME in url and UrlParser.HOSTNAME in url:
-                artifact_type = url[UrlParser.SCHEME].lower()
-            else:
-                raise Exception('ConfigurationOperations', 'Cannot retrieve artifact type')
-
-            if hasattr(params.custom_params, 'vrf_management_name'):
-                save_params['vrf_management_name'] = params.custom_params.vrf_management_name
+        url = UrlParser.parse_url(save_params['folder_path'])
+        if UrlParser.SCHEME in url and UrlParser.HOSTNAME in url:
+            artifact_type = url[UrlParser.SCHEME].lower()
+        else:
+            raise Exception('ConfigurationOperations', 'Cannot retrieve artifact type')
 
         self.logger.info('Start saving configuration')
 
-        identifier_template = '//{}/{}/'
-        if 'filesystem' in artifact_type:
-            identifier_template = '/{}/{}/'
+        identifier_template = '//{}/'
+        if not re.search('ftp|tftp|sftp|scp', artifact_type, re.IGNORECASE):
+            identifier_template = '/{}/'
 
         host = re.sub('/+', '', url[UrlParser.HOSTNAME])
         folder_path = re.sub('^/+', '', url[UrlParser.PATH])
-        identifier = identifier_template.format(host, folder_path)
+        identifier = identifier_template.format(host)
+        if folder_path:
+            identifier = identifier_template.format('{}/{}'.format(host, folder_path))
 
         identifier += self.save(**save_params).strip(',')
 
