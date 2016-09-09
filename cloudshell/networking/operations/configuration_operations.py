@@ -34,6 +34,8 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
     REQUIRED_SAVE_ATTRIBUTES_LIST = ['resource_name', ('saved_artifact', 'identifier'),
                                      ('saved_artifact', 'artifact_type'), ('restore_rules', 'requires_same_resource')]
 
+    AUTHORIZATION_REQUIRED_STORAGES = ['ftp', 'sftp', 'scp']
+
     @property
     @abstractmethod
     def logger(self):
@@ -58,48 +60,20 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         :rtype json
         """
 
-        params = None
+        params = dict()
         if custom_params:
             params = jsonpickle.decode(custom_params)
 
-        if not params:
-            raise Exception('ConfigurationOperations', 'Deserialized custom_params is None or empty')
+        save_params = params.get('custom_params', {})
 
-        save_params = dict()
-
-        if params and 'custom_params' in params and params['custom_params']:
-            save_params.update(params['custom_params'])
-
-        if 'folder_path' not in save_params:
-            host = get_attribute_by_name('Backup Location')
-            if ':' not in host:
-                scheme = get_attribute_by_name('Backup Type')
-                if not scheme:
-                    raise Exception('ConfigurationOperations', "Backup Type is wrong or empty")
-                scheme = re.sub(':|/+', '', scheme)
-                host = re.sub('^/+', '', host)
-                host = '{}://{}'.format(scheme, host)
-            save_params['folder_path'] = host
-            if not save_params['folder_path']:
-                raise Exception('ConfigurationOperations', 'Backup Location and folder path attribute is empty')
+        save_params['folder_path'] = self.get_path(save_params['folder_path'])
 
         url = UrlParser.parse_url(save_params['folder_path'])
-        if UrlParser.SCHEME in url and UrlParser.HOSTNAME in url:
-            artifact_type = url[UrlParser.SCHEME].lower()
-        else:
-            raise Exception('ConfigurationOperations', 'Cannot retrieve artifact type')
+        artifact_type = url[UrlParser.SCHEME].lower()
 
         self.logger.info('Start saving configuration')
 
-        identifier_template = '//{}/'
-        if not re.search('ftp|tftp|sftp|scp', artifact_type, re.IGNORECASE):
-            identifier_template = '/{}/'
-
-        host = re.sub('/+', '', url[UrlParser.HOSTNAME])
-        folder_path = re.sub('^/+', '', url[UrlParser.PATH])
-        identifier = identifier_template.format(host)
-        if folder_path:
-            identifier = identifier_template.format('{}/{}'.format(host, folder_path))
+        identifier = save_params['folder_path'].replace('{}:'.format(artifact_type), '')
 
         identifier += self.save(**save_params).strip(',')
 
@@ -113,6 +87,32 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         self._validate_artifact_info(saved_artifact_info)
 
         return set_command_result(save_response)
+
+    def get_path(self, path=''):
+        if not path:
+            host = get_attribute_by_name('Backup Location')
+            if ':' not in host:
+                scheme = get_attribute_by_name('Backup Type')
+                scheme = re.sub('(:|/+).*$', '', scheme, re.DOTALL)
+                host = re.sub('^/+', '', host)
+                host = '{}://{}'.format(scheme, host)
+            path = host
+
+        url = UrlParser.parse_url(path)
+        if UrlParser.SCHEME not in url or not url[UrlParser.SCHEME]:
+            raise Exception('ConfigurationOperations', "Backup Type is wrong or empty")
+
+        if url[UrlParser.SCHEME].lower() in self.AUTHORIZATION_REQUIRED_STORAGES:
+            if UrlParser.USERNAME not in url or not url[UrlParser.USERNAME]:
+                url[UrlParser.USERNAME] = get_attribute_by_name('Backup User')
+            if UrlParser.PASSWORD not in url or not url[UrlParser.PASSWORD]:
+                url[UrlParser.PASSWORD] = decrypt_password(get_attribute_by_name('Backup Password'))
+        try:
+            result = UrlParser.build_url(url)
+        except Exception as e:
+            self.logger.error('Failed to build url: {}'.format(e))
+            raise Exception('ConfigurationOperations', 'Failed to build path url to remote host')
+        return result
 
     def orchestration_restore(self, saved_artifact_info, custom_params=None):
         """Orchestration restore
@@ -143,13 +143,8 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
                 and saved_config.resource_name.lower() != self.resource_name.lower():
             raise Exception('ConfigurationOperations', 'Incompatible resource, expected {}'.format(self.resource_name))
 
-        url = UrlParser.parse_url('{}:{}'.format(saved_config.saved_artifact.artifact_type,
-                                                 saved_config.saved_artifact.identifier))
-
-        if 'tftp' not in saved_config.saved_artifact.artifact_type.lower():
-            url[UrlParser.USERNAME] = self._get_resource_attribute(self.resource_name, 'Backup User')
-            url[UrlParser.PASSWORD] = decrypt_password(self._get_resource_attribute(self.resource_name,
-                                                                                    'Backup Password'))
+        url = self.get_path('{}:{}'.format(saved_config.saved_artifact.artifact_type,
+                                           saved_config.saved_artifact.identifier))
 
         restore_params['restore_method'] = 'override'
         restore_params['configuration_type'] = 'running'
@@ -171,11 +166,7 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         if 'vrf_management_name' not in restore_params:
             restore_params['vrf_management_name'] = self._get_resource_attribute(self.resource_name,
                                                                                  'VRF Management Name')
-        try:
-            restore_params['path'] = UrlParser.build_url(**url)
-        except Exception as e:
-            self.logger.error('Failed to build url: {}'.format(e))
-            raise Exception('ConfigurationOperations', 'Failed to build url: {}'.format(e))
+        restore_params['path'] = url
 
         self.restore(**restore_params)
 

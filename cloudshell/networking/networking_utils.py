@@ -339,40 +339,38 @@ class UrlParser(object):
         return result
 
     @staticmethod
-    def build_url(**kwargs):
+    def build_url(url):
         url_result = {UrlParser.QUERY: '', UrlParser.FRAGMENT: ''}
-        if not kwargs or UrlParser.SCHEME not in kwargs \
-                or UrlParser.HOSTNAME not in kwargs \
-                or UrlParser.FILENAME not in kwargs \
-                or not kwargs[UrlParser.SCHEME]\
-                or not kwargs[UrlParser.HOSTNAME] \
-                or not kwargs[UrlParser.FILENAME]:
+        if not url or UrlParser.SCHEME not in url \
+                or UrlParser.HOSTNAME not in url \
+                or not url[UrlParser.SCHEME]\
+                or not url[UrlParser.HOSTNAME]:
             raise Exception('UrlParser:build_url', 'Url dictionary is empty or missing key values')
 
-        url_result[UrlParser.SCHEME] = kwargs[UrlParser.SCHEME]
+        url_result[UrlParser.SCHEME] = url[UrlParser.SCHEME]
 
-        if UrlParser.NETLOC in kwargs and kwargs[UrlParser.NETLOC]:
-            if UrlParser.USERNAME in kwargs \
-                    and kwargs[UrlParser.USERNAME] \
-                    and kwargs[UrlParser.USERNAME] in kwargs[UrlParser.NETLOC]:
-                url_result[UrlParser.NETLOC] = kwargs[UrlParser.NETLOC]
+        if UrlParser.NETLOC in url and url[UrlParser.NETLOC]:
+            if UrlParser.USERNAME in url \
+                    and url[UrlParser.USERNAME] \
+                    and url[UrlParser.USERNAME] in url[UrlParser.NETLOC]:
+                url_result[UrlParser.NETLOC] = url[UrlParser.NETLOC]
         if UrlParser.NETLOC not in url_result:
-            url_result[UrlParser.NETLOC] = kwargs[UrlParser.HOSTNAME]
-            if UrlParser.PORT in kwargs and kwargs[UrlParser.PORT]:
-                url_result[UrlParser.NETLOC] += str(kwargs[UrlParser.PORT])
-            if UrlParser.USERNAME in kwargs and kwargs[UrlParser.USERNAME]:
-                credentials = '{}@'.format(kwargs[UrlParser.USERNAME])
-                if UrlParser.PASSWORD in kwargs and kwargs[UrlParser.PASSWORD]:
-                    credentials = '{}:{}@'.format(kwargs[UrlParser.USERNAME], kwargs[UrlParser.PASSWORD])
+            url_result[UrlParser.NETLOC] = url[UrlParser.HOSTNAME]
+            if UrlParser.PORT in url and url[UrlParser.PORT]:
+                url_result[UrlParser.NETLOC] += str(url[UrlParser.PORT])
+            if UrlParser.USERNAME in url and url[UrlParser.USERNAME]:
+                credentials = '{}@'.format(url[UrlParser.USERNAME])
+                if UrlParser.PASSWORD in url and url[UrlParser.PASSWORD]:
+                    credentials = '{}:{}@'.format(url[UrlParser.USERNAME], url[UrlParser.PASSWORD])
                 url_result[UrlParser.NETLOC] = credentials + url_result[UrlParser.NETLOC]
 
-        url_result[UrlParser.PATH] = kwargs[UrlParser.FILENAME]
-        if UrlParser.PATH in kwargs and kwargs[UrlParser.PATH]:
-            url_result[UrlParser.PATH] = kwargs[UrlParser.PATH] + '/' + url_result[UrlParser.PATH]
+        url_result[UrlParser.PATH] = url[UrlParser.FILENAME]
+        if UrlParser.PATH in url and url[UrlParser.PATH]:
+            url_result[UrlParser.PATH] = url[UrlParser.PATH] + '/' + url_result[UrlParser.PATH]
             url_result[UrlParser.PATH] = re.sub('//+', '/', url_result[UrlParser.PATH])
 
-        if UrlParser.QUERY in kwargs and kwargs[UrlParser.QUERY]:
-            url_result[UrlParser.QUERY] = kwargs[UrlParser.QUERY]
+        if UrlParser.QUERY in url and url[UrlParser.QUERY]:
+            url_result[UrlParser.QUERY] = url[UrlParser.QUERY]
 
         result = SplitResult(**url_result)
         return result.geturl()
