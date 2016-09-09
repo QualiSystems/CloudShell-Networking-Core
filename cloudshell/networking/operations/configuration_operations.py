@@ -4,6 +4,8 @@ import jsonpickle
 from abc import abstractmethod
 import re
 
+from posixpath import join
+
 from cloudshell.networking.core.json_request_helper import JsonRequestDeserializer
 from cloudshell.networking.networking_utils import UrlParser
 from cloudshell.networking.operations.interfaces.configuration_operations_interface import \
@@ -77,9 +79,9 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
 
         self.logger.info('Start saving configuration')
 
-        identifier = save_params['folder_path'].replace('{}:'.format(artifact_type), '')
+        host = save_params['folder_path'].replace('{}:'.format(artifact_type), '')
 
-        identifier += self.save(**save_params).strip(',')
+        identifier = join(host, self.save(**save_params).strip(','))
 
         saved_artifact = OrchestrationSavedArtifact(identifier=identifier, artifact_type=artifact_type)
 
