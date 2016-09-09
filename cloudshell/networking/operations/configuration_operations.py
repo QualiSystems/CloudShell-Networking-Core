@@ -60,11 +60,15 @@ class ConfigurationOperations(ConfigurationOperationsInterface):
         :rtype json
         """
 
+        save_params = {'folder_path': '', 'configuration_type': 'running'}
         params = dict()
         if custom_params:
             params = jsonpickle.decode(custom_params)
 
-        save_params = params.get('custom_params', {})
+        save_params.update(params.get('custom_params', {}))
+
+        if save_params['folder_path'] and not save_params['folder_path'].endswith('/'):
+            save_params['folder_path'] += '/'
 
         save_params['folder_path'] = self.get_path(save_params['folder_path'])
 

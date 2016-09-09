@@ -341,10 +341,7 @@ class UrlParser(object):
     @staticmethod
     def build_url(url):
         url_result = {UrlParser.QUERY: '', UrlParser.FRAGMENT: ''}
-        if not url or UrlParser.SCHEME not in url \
-                or UrlParser.HOSTNAME not in url \
-                or not url[UrlParser.SCHEME]\
-                or not url[UrlParser.HOSTNAME]:
+        if not url or UrlParser.SCHEME not in url or not url[UrlParser.SCHEME]:
             raise Exception('UrlParser:build_url', 'Url dictionary is empty or missing key values')
 
         url_result[UrlParser.SCHEME] = url[UrlParser.SCHEME]
