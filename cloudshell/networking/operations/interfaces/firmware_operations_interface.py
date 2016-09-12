@@ -6,5 +6,5 @@ class FirmwareOperationsInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def update_firmware(self, remote_host, file_path, size_of_firmware):
+    def load_firmware(self, path, vrf_management_name):
         pass

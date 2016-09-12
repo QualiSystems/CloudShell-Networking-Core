@@ -8,3 +8,11 @@ class AutoloadOperationsInterface(object):
     @abstractmethod
     def discover(self):
         pass
+
+    @abstractmethod
+    def enable_snmp(self):
+        pass
+
+    @abstractmethod
+    def disable_snmp(self):
+        pass

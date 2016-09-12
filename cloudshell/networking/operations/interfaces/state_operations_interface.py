@@ -2,13 +2,16 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class SendCommandInterface(object):
+class StateOperationsInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def send_command(self, command):
+    def health_check(self):
         pass
 
     @abstractmethod
-    def send_config_command(self, command):
+    def shutdown(self):
+        pass
+
+    def reload(self):
         pass

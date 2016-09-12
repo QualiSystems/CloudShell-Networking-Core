@@ -6,7 +6,7 @@ import socket
 import struct
 import math
 
-from urlparse import urlsplit
+from urlparse import urlsplit, urlunsplit, urljoin, SplitResult
 
 
 def normalizePath(path):
@@ -18,6 +18,7 @@ def normalizePath(path):
     ret_path = re.sub(' ', '%20', ret_path)
 
     return ret_path
+
 
 ip2int = lambda ipstr: struct.unpack('!I', socket.inet_aton(ipstr))[0]
 int2ip = lambda n: socket.inet_ntoa(struct.pack('!I', n))
@@ -32,6 +33,7 @@ def isInteger(s):
 
     try:
         import unicodedata
+
         unicodedata.numeric(s)
         return True
     except (TypeError, ValueError):
@@ -64,7 +66,7 @@ def getNewIP(ipaddress, wMask):
     for i in range(len(ip_octets)):
         new_ip.append(str(int(ip_octets[i]) + int(mask_octets[i])))
 
-    return '.' . join(new_ip)
+    return '.'.join(new_ip)
 
 
 def validateIP(str):
@@ -141,24 +143,24 @@ def validateMAC(str):
 def getBroadCastAddress(ip, mask):
     """Calculate broadcast IP address for provided IP and subnet
     """
-    #fixme need lib
-    #network = ipcalc.Network(ip, mask)
-    #return str(network.broadcast())
+    # fixme need lib
+    # network = ipcalc.Network(ip, mask)
+    # return str(network.broadcast())
 
 
 def getIpInfo(ipStr):
     """Get IANA allocation information for the current IP address.
     """
-    #fixme need lib
-    #ip = ipcalc.IP(ipStr)
-    #return ip.info()
+    # fixme need lib
+    # ip = ipcalc.IP(ipStr)
+    # return ip.info()
 
 
 def getSubnetCidr(ip, mask):
     """Get subnet in CIDR format, ex: 255.255.255.0 - 24
     """
-    #fixme need lib
-    #return ipcalc.Network('{}/{}'.format(ip, mask)).subnet()
+    # fixme need lib
+    # return ipcalc.Network('{}/{}'.format(ip, mask)).subnet()
 
 
 def getNetworkAddress(ip, mask):
@@ -170,11 +172,11 @@ def getNetworkAddress(ip, mask):
     :return networkAddress: string
 
     """
-    #fixme need lib
-    #return str(ipcalc.Network(ip, mask).network())
+    # fixme need lib
+    # return str(ipcalc.Network(ip, mask).network())
 
 
-#fixme add comments
+# fixme add comments
 def getMatrixFromString(data_str):
     lines = data_str.split('\n')
 
@@ -212,7 +214,7 @@ def getMatrixFromString(data_str):
         index = 0
         position = 0
         for column_len in column_lens:
-            column_line = line[position : position + column_len]
+            column_line = line[position: position + column_len]
 
             column_line_list = pattern_not_space.findall(column_line)
             column_line = ''
@@ -264,7 +266,7 @@ def normalize_buffer(input_buffer):
     Method for clear color fro input_buffer and special characters
     """
 
-    color_pattern = re.compile('\[[0-9]+;{0,1}[0-9]+m|\[[0-9]+m|\b|' + chr(27))            # 27 - ESC character
+    color_pattern = re.compile('\[[0-9]+;{0,1}[0-9]+m|\[[0-9]+m|\b|' + chr(27))  # 27 - ESC character
 
     result_buffer = ''
 
@@ -296,11 +298,11 @@ def getBitSize(bandwidth):
     bandwidth = bandwidth.lower()
     multiplier = 1
     if re.search('kbit/sec', bandwidth):
-        multiplier = 2**10
+        multiplier = 2 ** 10
     elif re.search('mbit/sec', bandwidth):
-        multiplier = 2**20
+        multiplier = 2 ** 20
     elif re.search('gbit/sec', bandwidth):
-        multiplier = 2**30
+        multiplier = 2 ** 30
 
     bits = int(re.search('\d+', bandwidth).group()) * multiplier
 
@@ -335,3 +337,37 @@ class UrlParser(object):
                     else:
                         result[attr_value] = value
         return result
+
+    @staticmethod
+    def build_url(url):
+        url_result = {UrlParser.QUERY: '', UrlParser.FRAGMENT: ''}
+        if not url or UrlParser.SCHEME not in url or not url[UrlParser.SCHEME]:
+            raise Exception('UrlParser:build_url', 'Url dictionary is empty or missing key values')
+
+        url_result[UrlParser.SCHEME] = url[UrlParser.SCHEME]
+
+        if UrlParser.NETLOC in url and url[UrlParser.NETLOC]:
+            if UrlParser.USERNAME in url \
+                    and url[UrlParser.USERNAME] \
+                    and url[UrlParser.USERNAME] in url[UrlParser.NETLOC]:
+                url_result[UrlParser.NETLOC] = url[UrlParser.NETLOC]
+        if UrlParser.NETLOC not in url_result:
+            url_result[UrlParser.NETLOC] = url[UrlParser.HOSTNAME]
+            if UrlParser.PORT in url and url[UrlParser.PORT]:
+                url_result[UrlParser.NETLOC] += str(url[UrlParser.PORT])
+            if UrlParser.USERNAME in url and url[UrlParser.USERNAME]:
+                credentials = '{}@'.format(url[UrlParser.USERNAME])
+                if UrlParser.PASSWORD in url and url[UrlParser.PASSWORD]:
+                    credentials = '{}:{}@'.format(url[UrlParser.USERNAME], url[UrlParser.PASSWORD])
+                url_result[UrlParser.NETLOC] = credentials + url_result[UrlParser.NETLOC]
+
+        url_result[UrlParser.PATH] = url[UrlParser.FILENAME]
+        if UrlParser.PATH in url and url[UrlParser.PATH]:
+            url_result[UrlParser.PATH] = url[UrlParser.PATH] + '/' + url_result[UrlParser.PATH]
+            url_result[UrlParser.PATH] = re.sub('//+', '/', url_result[UrlParser.PATH])
+
+        if UrlParser.QUERY in url and url[UrlParser.QUERY]:
+            url_result[UrlParser.QUERY] = url[UrlParser.QUERY]
+
+        result = SplitResult(**url_result)
+        return result.geturl()
