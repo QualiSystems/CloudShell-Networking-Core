@@ -6,9 +6,17 @@ class ConfigurationOperationsInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def save_configuration(self, destination_host, source_filename, vrf=None):
+    def save(self, folder_path, configuration_type, vrf_management_name=None):
         pass
 
     @abstractmethod
-    def restore_configuration(self, source_file, config_type, restore_method='override', vrf=None):
+    def restore(self, path, configuration_type, restore_method, vrf_management_name=None):
+        pass
+
+    @abstractmethod
+    def orchestration_restore(self, saved_artifact_info, custom_params=None):
+        pass
+
+    @abstractmethod
+    def orchestration_save(self, mode="shallow", custom_params=None):
         pass
