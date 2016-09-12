@@ -1,6 +1,6 @@
 from cloudshell.shell.core.driver_context import AutoLoadAttribute
 
-class GenericResourceAttribute:
+class GenericResourceAttribute(object):
     def get_autoload_resource_attributes(self):
         attributes_dict = self.__dict__.copy()
         return attributes_dict.values()

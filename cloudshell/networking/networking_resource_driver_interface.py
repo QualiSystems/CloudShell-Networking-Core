@@ -3,7 +3,7 @@ __author__ = 'CoYe'
 from abc import ABCMeta
 from abc import abstractmethod
 
-class NetworkingResourceDriverInterface:
+class NetworkingResourceDriverInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -11,19 +11,19 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def send_custom_command(self, context, command):
+    def send_custom_command(self, context, custom_command):
         pass
 
     @abstractmethod
-    def send_custom_config_command(self, context, command):
+    def send_custom_config_command(self, context, custom_command):
         pass
 
     @abstractmethod
-    def save(self, context, folder_path, configuration_type):
+    def save(self, context, folder_path, configuration_type, vrf_management_name=None):
         pass
 
     @abstractmethod
-    def restore(self, context, path, config_type, restore_method):
+    def restore(self, context, path, configuration_type, restore_method, vrf_management_name=None):
         pass
 
     @abstractmethod
@@ -31,7 +31,19 @@ class NetworkingResourceDriverInterface:
         pass
 
     @abstractmethod
-    def update_firmware(self, context, remote_host, file_path):
+    def orchestration_restore(self, context, saved_artifact_info, custom_params=None):
+        pass
+
+    @abstractmethod
+    def orchestration_save(self, context, mode="shallow", custom_params=None):
+        pass
+
+    @abstractmethod
+    def health_check(self, context):
+        pass
+
+    @abstractmethod
+    def load_firmware(self, context, remote_host, file_path):
         pass
 
     @abstractmethod
