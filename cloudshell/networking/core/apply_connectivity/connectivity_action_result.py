@@ -1,4 +1,4 @@
-class ActionResult(object):
+class ConnectivityActionResult(object):
 
     def __init__(self):
         self.actionId = '',
