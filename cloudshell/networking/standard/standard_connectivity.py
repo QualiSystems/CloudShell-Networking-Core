@@ -5,7 +5,7 @@ from cloudshell.core.driver_response import DriverResponse
 from cloudshell.core.driver_response_root import DriverResponseRoot
 from cloudshell.networking.core.json_request_helper import JsonRequestDeserializer
 
-class ConnectivityRequest:
+class ConnectivityActionRequest:
     SET_VLAN = 'setVlan'
     REMOVE_VLAN = 'removeVlan'
 
@@ -36,10 +36,10 @@ class StandardApplyConnectivityImplementation(object):
 
         for action in holder.driverRequest.actions:
             logger.info('Action: ', action.__dict__)
-            if action.type == ConnectivityRequest.SET_VLAN:
+            if action.type == ConnectivityActionRequest.SET_VLAN:
                 action_result = add_vlan_action(action)
 
-            elif action.type == ConnectivityRequest.REMOVE_VLAN:
+            elif action.type == ConnectivityActionRequest.REMOVE_VLAN:
                 action_result = remove_vlan_action(action)
 
             else:
