@@ -1,12 +1,11 @@
 import logging
 
 import jsonpickle
-from cloudshell.core.action_result import ActionResult
 from cloudshell.core.driver_request import DriverRequest
 from cloudshell.core.driver_response import DriverResponse
 from cloudshell.core.driver_response_root import DriverResponseRoot
-from cloudshell.networking.core.apply_connectivity.connectivity_action_request import ConnectivityActionRequest
-from cloudshell.networking.core.apply_connectivity.connectivity_action_result import ConnectivityActionResult
+from cloudshell.networking.apply_connectivity.models.connectivity_request import ConnectivityActionRequest
+from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivityActionResult
 
 
 def connectivity_request_from_json(json_request):
@@ -64,24 +63,3 @@ def apply_connectivity_changes(request, add_vlan_action, remove_vlan_action, log
     return driver_response_root
 
 
-class ConnectivitySuccessResponse(ConnectivityActionResult):
-    def __init__(self, action, result_string):
-        ConnectivityActionResult.__init__(self)
-        self.type = action.type
-        self.actionId = action.actionId
-        self.errorMessage = None
-        self.updatedInterface = action.actionTarget.fullName
-        self.infoMessage = result_string
-        self.success = True
-
-
-
-class ConnectivityErrorResponse(ConnectivityActionResult):
-    def __init__(self, action, error_string):
-        ConnectivityActionResult.__init__(self)
-        self.type = action.type
-        self.actionId = action.actionId
-        self.infoMessage = None
-        self.updatedInterface = action.actionTarget.fullName
-        self.errorMessage = error_string
-        self.success = False

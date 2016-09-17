@@ -1,15 +1,13 @@
+import unittest
 import uuid
 
 import jsonpickle
 from cloudshell.core.driver_request import DriverRequest
+from cloudshell.networking.apply_connectivity.models.connectivity_request import ActionTarget, AttributeNameValue, \
+    ConnectionParams, ConnectivityActionRequest
+from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivitySuccessResponse
+from cloudshell.networking.apply_connectivity.apply_connectivity_operation import apply_connectivity_changes
 from mock import Mock, MagicMock
-from cloudshell.networking.core.apply_connectivity.atribute_name_value import AttributeNameValue
-from cloudshell.networking.core.apply_connectivity.connectivity_action_request import ConnectivityActionRequest
-from cloudshell.networking.core.apply_connectivity.action_target import ActionTarget
-from cloudshell.networking.core.apply_connectivity.apply_connectivity_changes import ConnectivitySuccessResponse, \
-    apply_connectivity_changes
-from cloudshell.networking.core.apply_connectivity.connection_params import ConnectionParams
-import unittest
 
 
 class DriverRequestSimulation:
@@ -17,7 +15,7 @@ class DriverRequestSimulation:
         self.driverRequest = request
 
 
-class MyTestCase(unittest.TestCase):
+class TestApplyConnectivityOperation(unittest.TestCase):
     def setUp(self):
         self.logger = Mock()
 

@@ -1,6 +1,73 @@
-from cloudshell.networking.core.apply_connectivity.action_target import ActionTarget
-from cloudshell.networking.core.apply_connectivity.atribute_name_value import AttributeNameValue
-from cloudshell.networking.core.apply_connectivity.connection_params import ConnectionParams
+class AttributeNameValue(object):
+    def __init__(self, attribute_name='', attribute_value='', type=''):
+        """
+        Describes an attribute name value
+        :param str attribute_name: Attribute name
+        :param str attribute_value: Attribute value
+        :param str type: Object type
+        """
+
+        self.type = type
+        """:type : str"""
+        self.attributeName = attribute_name
+        """:type : str"""
+        self.attributeValue = attribute_value
+        """:type : str"""
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        att = AttributeNameValue()
+        att.type = dictionary['type']
+        att.attributeName = dictionary['attributeName']
+        att.attributeValue = dictionary['attributeValue']
+        return att
+
+
+class ActionTarget:
+
+    def __init__(self, full_name='', full_address=''):
+        """
+        Describes a connectivity action target
+        :param str full_name: full resource name
+        :param str full_address: full resource address
+        """
+        self.fullName = full_name
+        """:type : str"""
+        self.fullAddress = full_address
+        """:type : str"""
+        self.type = "actionTarget"
+        """:type : str"""
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        return ActionTarget(full_name=dictionary['fullName'], full_address=dictionary['fullAddress'])
+
+
+class ConnectionParams(object):
+    def __init__(self, type='', vlan_id='', mode='', vlan_service_attributes=[]):
+        """
+        :param str type:
+        :param str vlan_id:
+        :param str mode:
+        :param list[AttributeNameValue] vlan_service_attributes:
+        """
+        self.type = type
+        self.vlanId = vlan_id
+        self.mode = mode
+        self.vlanServiceAttributes= vlan_service_attributes
+        self.type='setVlanParameter'
+
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        con_params = ConnectionParams()
+        con_params.type = dictionary['type']
+        con_params.vlanServiceAttributes = [AttributeNameValue.from_dict(attr) for attr
+                                            in dictionary['vlanServiceAttributes']]
+        con_params.mode = dictionary['mode']
+        return con_params
+
+
 
 class ConnectivityActionRequest(object):
     SET_VLAN = 'setVlan'
