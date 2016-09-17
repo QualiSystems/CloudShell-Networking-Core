@@ -64,19 +64,21 @@ def apply_connectivity_changes(request, add_vlan_action, remove_vlan_action, log
     return driver_response_root
 
 
-class ConnectivitySuccessResponse(ActionResult):
+class ConnectivitySuccessResponse(ConnectivityActionResult):
     def __init__(self, action, result_string):
-        ActionResult.__init__(self)
+        ConnectivityActionResult.__init__(self)
         self.type = action.type
         self.actionId = action.actionId
         self.errorMessage = None
         self.updatedInterface = action.actionTarget.fullName
         self.infoMessage = result_string
+        self.success = True
 
 
-class ConnectivityErrorResponse(ActionResult):
+
+class ConnectivityErrorResponse(ConnectivityActionResult):
     def __init__(self, action, error_string):
-        ActionResult.__init__(self)
+        ConnectivityActionResult.__init__(self)
         self.type = action.type
         self.actionId = action.actionId
         self.infoMessage = None
