@@ -15,7 +15,7 @@ by CloudShell Shells and connectivity providers implementations.
 
 ## Contributing 
 
-We welcome community ideas an contributions. 
+We welcome community ideas and contributions. 
 
 To provide feedback or request enhancements simply create an issue in the repository. 
 You can use the [Waffle Board](https://waffle.io/QualiSystems/cloudshell-networking) to add issues directly and catch up on the current backlog progress.
