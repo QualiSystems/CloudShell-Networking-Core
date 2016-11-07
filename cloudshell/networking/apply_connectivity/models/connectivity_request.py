@@ -54,13 +54,13 @@ class ConnectionParams(object):
         self.type = type
         self.vlanId = vlan_id
         self.mode = mode
-        self.vlanServiceAttributes= vlan_service_attributes
-        self.type='setVlanParameter'
-
+        self.vlanServiceAttributes = vlan_service_attributes
+        self.type = 'setVlanParameter'
 
     @classmethod
     def from_dict(cls, dictionary):
         con_params = ConnectionParams()
+        con_params.vlanId = dictionary['vlanId']
         con_params.type = dictionary['type']
         con_params.vlanServiceAttributes = [AttributeNameValue.from_dict(attr) for attr
                                             in dictionary['vlanServiceAttributes']]
@@ -73,8 +73,8 @@ class ConnectivityActionRequest(object):
     SET_VLAN = 'setVlan'
     REMOVE_VLAN = 'removeVlan'
 
-    def __init__(self, action_id='', type='', action_target=None, connection_id='', connection_params=[], connector_attributes=[],
-                 custom_action_attributes=[]):
+    def __init__(self, action_id='', type='', action_target=None, connection_id='', connection_params=None,
+                 connector_attributes=None, custom_action_attributes=None):
         """
         Request to perform a connectivity change
         :param str action_id: An identifier for this action, a response with the corresponding ID is requested

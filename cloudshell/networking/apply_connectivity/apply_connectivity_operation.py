@@ -5,7 +5,6 @@ from cloudshell.core.driver_request import DriverRequest
 from cloudshell.core.driver_response import DriverResponse
 from cloudshell.core.driver_response_root import DriverResponseRoot
 from cloudshell.networking.apply_connectivity.models.connectivity_request import ConnectivityActionRequest
-from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivityActionResult
 
 
 def connectivity_request_from_json(json_request):
@@ -27,8 +26,8 @@ def apply_connectivity_changes(request, add_vlan_action, remove_vlan_action, log
     of the add/remove vlan functions into a result object.
 
     :param str request: json string sent from the CloudShell server describing the connectivity changes to perform
-    :param (ConnectivityActionRequest) -> ConnectivityActionResult remove_vlan_action: This action will be called for VLAN remove operations
-    :param (ConnectivityActionRequest) -> ConnectivityActionResult add_vlan_action: This action will be called for VLAN_add_operations
+    :param Function -> ConnectivityActionResult remove_vlan_action: This action will be called for VLAN remove operations
+    :param Function -> ConnectivityActionResult add_vlan_action: This action will be called for VLAN add operations
     :param logger: logger to use for the operation, if you don't provide a logger, a default Python logger will be used
     :return Returns a driver action result object, this can be returned to CloudShell server by the command result
     :rtype: DriverResponseRoot

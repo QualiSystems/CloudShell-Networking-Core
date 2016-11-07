@@ -3,7 +3,7 @@ __author__ = 'CoYe'
 from abc import ABCMeta
 from abc import abstractmethod
 
-class NetworkingResourceDriverInterface:
+class NetworkingResourceDriverInterface(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
