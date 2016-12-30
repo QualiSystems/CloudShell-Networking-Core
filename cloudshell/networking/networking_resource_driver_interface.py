@@ -27,11 +27,11 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def save(self, context, folder_path, configuration_type, vrf_management_name=None):
+    def save(self, context, folder_path, configuration_type, vrf_management_name):
         pass
 
     @abstractmethod
-    def restore(self, context, path, configuration_type, restore_method, vrf_management_name=None):
+    def restore(self, context, path, configuration_type, restore_method, vrf_management_name):
         pass
 
     @abstractmethod
@@ -47,7 +47,7 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def orchestration_save(self, context, mode, custom_params=None):
+    def orchestration_save(self, context, mode='shallow', custom_params=None):
         pass
 
     @abstractmethod
@@ -55,7 +55,7 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def load_firmware(self, context, path, vrf_management_name=None):
+    def load_firmware(self, context, path, vrf_management_name):
         pass
 
     @abstractmethod
