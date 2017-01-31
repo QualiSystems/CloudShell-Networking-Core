@@ -1,7 +1,6 @@
-__author__ = 'CoYe'
-
 from abc import ABCMeta
 from abc import abstractmethod
+
 
 class NetworkingResourceDriverInterface(object):
     __metaclass__ = ABCMeta
@@ -43,11 +42,11 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def orchestration_restore(self, context, saved_artifact_info, custom_params=None):
+    def orchestration_restore(self, context, saved_artifact_info, custom_params):
         pass
 
     @abstractmethod
-    def orchestration_save(self, context, mode='shallow', custom_params=None):
+    def orchestration_save(self, context, mode, custom_params):
         pass
 
     @abstractmethod
