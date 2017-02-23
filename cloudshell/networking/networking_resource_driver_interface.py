@@ -18,23 +18,11 @@ class NetworkingResourceDriverInterface(object):
         pass
 
     @abstractmethod
-    def send_custom_command(self, context, custom_command):
-        pass
-
-    @abstractmethod
-    def send_custom_config_command(self, context, custom_command):
-        pass
-
-    @abstractmethod
     def save(self, context, folder_path, configuration_type, vrf_management_name):
         pass
 
     @abstractmethod
     def restore(self, context, path, configuration_type, restore_method, vrf_management_name):
-        pass
-
-    @abstractmethod
-    def update_firmware(self, context, remote_host, file_path):
         pass
 
     @abstractmethod
