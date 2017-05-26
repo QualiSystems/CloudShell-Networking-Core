@@ -1,18 +1,19 @@
 language: python
 python:
-- '2.7'
-
-before_install:
-- pip install -r requirements.txt
-- pip install -r test_requirements.txt
-- pip install coveralls
+    - "2.7"
 
 install:
-    - python setup.py install
+    - pip install coveralls
+    - 'if [ ${TRAVIS_BRANCH} = "master" ]; then
+        pip install -r requirements.txt;
+      else
+        pip install -r dev_requirements.txt;
+      fi'
+    - pip install -r test_requirements.txt
+    - python setup.py develop --no-deps
 
 script:
-    - python setup.py develop
-    - nosetests --with-coverage --cover-package=cloudshell
+    - nosetests --with-coverage --cover-package=cloudshell.networking
 
 after_success:
     coveralls
