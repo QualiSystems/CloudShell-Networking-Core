@@ -6,6 +6,7 @@ from cloudshell.core.driver_request import DriverRequest
 from cloudshell.networking.apply_connectivity.models.connectivity_request import ActionTarget, AttributeNameValue, \
     ConnectionParams, ConnectivityActionRequest
 from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivitySuccessResponse
+from cloudshell.networking.apply_connectivity.models.connectivity_result import ConnectivityErrorResponse
 from cloudshell.networking.apply_connectivity.apply_connectivity_operation import apply_connectivity_changes
 from mock import Mock, MagicMock
 
@@ -35,7 +36,7 @@ class TestApplyConnectivityOperation(unittest.TestCase):
         result = apply_connectivity_changes(request=request_json,
                                             logger=self.logger,
                                             add_vlan_action=add_vlan_function,
-                                            remove_vlan_action= {})
+                                            remove_vlan_action={})
 
         # Assert
         add_vlan_function.assert_called_once()
@@ -63,7 +64,7 @@ class TestApplyConnectivityOperation(unittest.TestCase):
         result = apply_connectivity_changes(request=request_json,
                                             logger=self.logger,
                                             add_vlan_action={},
-                                            remove_vlan_action= remove_vlan_function)
+                                            remove_vlan_action=remove_vlan_function)
 
         # Assert
         remove_vlan_function.assert_called_once()
@@ -149,7 +150,3 @@ class TestApplyConnectivityOperation(unittest.TestCase):
         action.connectorAttributes = []
         action.customActionAttributes = []
         return action
-
-
-if __name__ == '__main__':
-    unittest.main()

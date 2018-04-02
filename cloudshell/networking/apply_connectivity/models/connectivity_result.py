@@ -20,7 +20,6 @@ class ConnectivitySuccessResponse(ConnectivityActionResult):
         self.success = True
 
 
-
 class ConnectivityErrorResponse(ConnectivityActionResult):
     def __init__(self, action, error_string):
         ConnectivityActionResult.__init__(self)
